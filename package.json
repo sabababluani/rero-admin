@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
   },
   "dependencies": {
     "next": "14.2.8",
@@ -23,6 +24,7 @@
     "eslint-config-next": "14.2.8",
     "husky": "^9.1.5",
     "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
     "typescript": "^5"
   },
   "lint-staged": {
@@ -30,5 +32,13 @@
       "eslint --fix",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "applypatch-msg": "echo \"[Husky] applypatch-msg\"",
+      "pre-applypatch": "echo \"[Husky] pre-applypatch\"",
+      "post-applypatch": "echo \"[Husky] post-applypatch\"",
+      "pre-commit": "prettier --write . && git add -A ."
+    }
   }
 }
