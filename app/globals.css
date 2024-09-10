@@ -1,6 +1,7 @@
 html,
 body {
   overflow-x: hidden;
+  background-color: #121212;
 }
 
 * {
@@ -11,4 +12,8 @@ body {
 
 a {
   text-decoration: none;
+}
+
+.layout {
+  display: flex;
 }

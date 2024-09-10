@@ -1,0 +1,117 @@
+.container {
+  max-width: 1166px;
+  width: 100%;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(
+    90deg,
+    rgba(19, 130, 138, 0.1) 0%,
+    rgba(5, 34, 36, 0.1) 100%
+  );
+  cursor: pointer;
+  border-radius: 24px;
+}
+
+.container:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(19, 130, 138, 0.5) 0%,
+    rgba(5, 34, 36, 0.5) 100%
+  );
+}
+
+.container:active {
+  background: linear-gradient(90deg, #13828a 0%, #052224 100%);
+}
+
+.cover {
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.musicContainer,
+.wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.musicContainer {
+  gap: 16px;
+}
+
+.wrapper {
+  gap: 16px;
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.musicSpan,
+.artistSpan,
+.albumSpan,
+.durationSpan {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.artistSpan {
+  font-size: 14px;
+}
+
+.plusActive {
+  background-color: #13828a;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.plus:hover {
+  background-color: #13828a;
+}
+
+.garbageSpan {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+.garbageSpan:hover {
+  background-color: #ff4343;
+}
+
+.garbage {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
