@@ -1,0 +1,58 @@
+export const artistData = [
+  {
+    id: 1,
+    cover: '/vache.jpg',
+    artistName: 'Artist One',
+    albums: 5,
+    songCount: 50,
+  },
+  {
+    id: 2,
+    cover: '/vache.jpg',
+    artistName: 'Artist Two',
+    albums: 3,
+    songCount: 30,
+  },
+  {
+    id: 3,
+    cover: '/vache.jpg',
+    artistName: 'Artist Three',
+    albums: 7,
+    songCount: 70,
+  },
+  {
+    id: 4,
+    cover: '/vache.jpg',
+    artistName: 'Artist Four',
+    albums: 2,
+    songCount: 20,
+  },
+  {
+    id: 5,
+    cover: '/vache.jpg',
+    artistName: 'Artist Five',
+    albums: 6,
+    songCount: 60,
+  },
+  {
+    id: 6,
+    cover: '/vache.jpg',
+    artistName: 'Artist Six',
+    albums: 4,
+    songCount: 40,
+  },
+  {
+    id: 7,
+    cover: '/vache.jpg',
+    artistName: 'Artist Seven',
+    albums: 8,
+    songCount: 80,
+  },
+  {
+    id: 8,
+    cover: '/vache.jpg',
+    artistName: 'Artist Eight',
+    albums: 9,
+    songCount: 90,
+  },
+];

@@ -5,7 +5,9 @@ import { NavigationItemPropsInterface } from './interfaces/navigation-item-props
 const NavigationItem = (props: NavigationItemPropsInterface) => {
   return (
     <Link href={props.link}>
-      <div className={styles.container}>{props.title}</div>
+      <div className={`${styles.container} ${props.isActive && styles.active}`}>
+        {props.title}
+      </div>
     </Link>
   );
 };

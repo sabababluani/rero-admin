@@ -33,6 +33,10 @@
   justify-content: center;
 }
 
+.cover img {
+  border-radius: 12px;
+}
+
 .musicContainer,
 .wrapper {
   display: flex;
@@ -109,9 +113,12 @@
 }
 
 .star {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.star img {
+  width: 27px;
 }

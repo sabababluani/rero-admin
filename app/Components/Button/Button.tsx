@@ -5,7 +5,7 @@ const Button = (props: ButtonPropsInterface) => {
   return (
     <button
       onClick={props.onClick}
-      className={styles.container}
+      className={`${styles.container} ${props.confirm && styles.confrim}`}
       disabled={props.disabled}
     >
       {props.title}

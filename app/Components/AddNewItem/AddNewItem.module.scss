@@ -1,0 +1,17 @@
+.container {
+  width: 198px;
+  height: 40px;
+  background-color: #052224;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  cursor: pointer;
+}
+
+.active {
+    border-right: 1px solid #fff;
+    background-color: #13828a;
+}

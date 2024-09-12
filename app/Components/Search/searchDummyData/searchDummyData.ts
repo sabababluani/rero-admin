@@ -1,8 +1,8 @@
 export const dummyData = [
-  'Apple Music',
-  'Spotify',
-  'Amazon Music',
-  'Google Play Music',
-  'Tidal',
-  'Deezer',
+  'kendrika',
+  'baby',
+  'rame',
+  'zd zmaaa',
+  'all eyez on you',
+  'ravaxar',
 ];

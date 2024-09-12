@@ -8,7 +8,6 @@ import { dummyData } from './searchDummyData/searchDummyData';
 const Search = () => {
   const [inputValue, setInputValue] = useState<string>('');
   const [results, setResults] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchResults = () => {
@@ -17,14 +16,10 @@ const Search = () => {
         return;
       }
 
-      setLoading(true);
-      setTimeout(() => {
-        const filteredResults = dummyData.filter((item) =>
-          item.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        setResults(filteredResults);
-        setLoading(false);
-      }, 500);
+      const filteredResults = dummyData.filter((item) =>
+        item.toLowerCase().includes(inputValue.toLowerCase()),
+      );
+      setResults(filteredResults);
     };
 
     fetchResults();
@@ -36,7 +31,6 @@ const Search = () => {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      e.preventDefault();
       setInputValue('');
     }
   };
@@ -52,7 +46,6 @@ const Search = () => {
         onKeyDown={handleKeyPress}
         className={styles.input}
       />
-      {loading && <div className={styles.loading}>Loading...</div>}
       {results.length > 0 && (
         <ul className={styles.results}>
           {results.map((result, index) => (

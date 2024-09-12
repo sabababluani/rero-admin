@@ -3,4 +3,5 @@ export interface ButtonPropsInterface {
   disabled?: boolean;
   icon?: string;
   onClick?: () => void;
+  confirm?: boolean;
 }

@@ -5,4 +5,5 @@ export interface MusicRowPropsInterface {
   album: string;
   artistName: string;
   duration: string;
+  onDelete: (id : number) => void;
 }
