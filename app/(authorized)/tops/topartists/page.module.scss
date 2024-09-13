@@ -1,18 +1,17 @@
 .wrapper {
-  padding-top: 48px;
   width: 100%;
+  padding-top: 48px;
   padding-left: 24px;
 }
-
 .wrapper h1 {
-  color: #fff;
   font-size: 38px;
+  color: #fff;
+  padding-bottom: 12px;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  width: 100%;
   gap: 12px;
-  margin-top: 24px;
+  padding-top: 32px;
 }
