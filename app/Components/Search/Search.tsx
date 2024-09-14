@@ -1,38 +1,27 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import styles from './Seach.module.scss';
+import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
 import Image from 'next/image';
-import { dummyData } from './searchDummyData/searchDummyData';
+import styles from './Seach.module.scss';
+import { SearchPropsInterface } from './interfaces/search-props.interface';
 
-const Search = () => {
-  const [inputValue, setInputValue] = useState<string>('');
-  const [results, setResults] = useState<string[]>([]);
+const Search = (props: SearchPropsInterface) => {
+  const [inputValue, setInputValue] = useState('');
 
-  useEffect(() => {
-    const fetchResults = () => {
-      if (inputValue.trim() === '') {
-        setResults([]);
-        return;
-      }
-
-      const filteredResults = dummyData.filter((item) =>
-        item.toLowerCase().includes(inputValue.toLowerCase()),
-      );
-      setResults(filteredResults);
-    };
-
-    fetchResults();
-  }, [inputValue]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+    props.onSearch(event.target.value);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      setInputValue('');
+  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      props.onSearch(inputValue);
     }
+  };
+
+  const handleResultClick = (result: string) => {
+    if (props.onSelectResult) {
+      props.onSelectResult(result);
+    }
+    setInputValue(result);
   };
 
   return (
@@ -40,21 +29,12 @@ const Search = () => {
       <Image src="/search.png" alt="search" width={24} height={24} />
       <input
         type="text"
-        placeholder="Search"
         value={inputValue}
+        placeholder={props.placeholder}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
         className={styles.input}
       />
-      {results.length > 0 && (
-        <ul className={styles.results}>
-          {results.map((result, index) => (
-            <li key={index} className={styles.resultItem}>
-              {result}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

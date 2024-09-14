@@ -9,9 +9,21 @@ import { artistData } from './artistDummyData/artist-dummy-data';
 
 const Artist = () => {
   const [artist, setArtist] = useState(artistData);
+  const [filteredArtists, setFilteredArtists] = useState(artistData);
 
   const handleDelete = (id: number) => {
     setArtist((prevArtist) => prevArtist.filter((artist) => artist.id !== id));
+    setFilteredArtists((prevArtists) =>
+      prevArtists.filter((artist) => artist.id !== id),
+    );
+  };
+
+  const handleSearch = (value: string) => {
+    const lowercasedValue = value.toLowerCase();
+    const results = artistData.filter((artist) =>
+      artist.artistName.toLowerCase().includes(lowercasedValue),
+    );
+    setFilteredArtists(results);
   };
 
   return (
@@ -19,12 +31,16 @@ const Artist = () => {
       <div className={styles.container}>
         <div className={styles.searchContainer}>
           <h1>All Artists</h1>
-          <Search />
+          <Search
+            placeholder="Search artists..."
+            onSearch={handleSearch}
+            results={filteredArtists.map((artist) => artist.artistName)}
+          />
         </div>
-        <AddNewItem href='/musicadd'/>
+        <AddNewItem href="/artists/artistadd" />
       </div>
       <div className={styles.artists}>
-        {artist.map((artist) => (
+        {filteredArtists.map((artist) => (
           <ArtistRow
             key={artist.id}
             id={artist.id}

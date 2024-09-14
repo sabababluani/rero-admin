@@ -9,9 +9,19 @@ import { songData } from './utils/SongData';
 
 export default function Home() {
   const [songs, setSongs] = useState(songData);
+  const [filteredSongs, setFilteredSongs] = useState(songData);
 
   const handleDelete = (id: number) => {
     setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+  };
+
+  const handleSearch = (value: string) => {
+    const lowercasedValue = value.toLowerCase();
+    const results = songs.filter(song =>
+      song.music.toLowerCase().includes(lowercasedValue) ||
+      song.artistName.toLowerCase().includes(lowercasedValue)
+    );
+    setFilteredSongs(results);
   };
 
   return (
@@ -19,14 +29,17 @@ export default function Home() {
       <div className={styles.headerContainer}>
         <div>
           <h1>All Songs</h1>
-          <Search />
+          <Search
+            onSearch={handleSearch}
+            results={filteredSongs.map(song => song.music)}
+          />
         </div>
         <div>
           <AddNewItem href="/musicadd" />
         </div>
       </div>
       <div className={styles.container}>
-        {songs.map((song) => (
+        {filteredSongs.map((song) => (
           <MusicRow
             key={song.id}
             id={song.id}

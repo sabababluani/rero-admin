@@ -1,5 +1,9 @@
 .wrapper {
   display: flex;
+  flex-direction: column;
+  padding-left: 24px;
+  padding-top: 48px;
+  width: 100%;
 }
 
 .wrapper h1 {
@@ -8,4 +12,97 @@
 }
 .container {
   display: flex;
+  justify-content: space-between;
+  padding-bottom: 24px;
+}
+
+.inputsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.inputContainer span {
+  margin-top: 4px;
+  color: red;
+}
+.inputContainer input {
+  width: 100%;
+  height: 48px;
+  border-radius: 6px;
+  padding-left: 12px;
+  margin-bottom: 4px;
+}
+
+.inputContainer p {
+  color: #fff;
+  font-size: 20px;
+  padding-bottom: 8px;
+}
+
+.formContainer {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  width: 100%;
+  padding-right: 48px;
+}
+
+.coverContainer p {
+  color: #fff;
+  font-size: 20px;
+  padding-bottom: 8px;
+}
+.coverContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  padding-bottom: 60px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: end;
+  padding-right: 48px;
+}
+
+.buttonContainer button {
+  width: 400px;
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background-color: #13828a;
+  border: none;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonContainer button:hover {
+  background-color: #1dc2ce;
+}
+
+
+.uploadInputWrapper {
+  position: relative;
+}
+
+.uploadInputWrapper button {
+  position: absolute;
+  left: 10px;
+  top: 14px;
+}
+
+.uploadInputWrapper input {
+  padding-left: 90px;
 }

@@ -5,43 +5,78 @@ import styles from './page.module.scss';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-
-interface FormInputs {
-  songTitle: string;
-  artistName: string;
-  albumName: string;
-}
+import axios from 'axios';
+import { FormInputsPropsInterface } from './interfaces/form-inputs-props.interface';
 
 const MusicAdd = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormInputs>();
+  } = useForm<FormInputsPropsInterface>();
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // State to store the uploaded image
+  const musicFileInputRef = useRef<HTMLInputElement | null>(null);
+  const coverImageInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedMusicFile, setSelectedMusicFile] = useState<File | null>(null);
+  const [musicFileName, setMusicFileName] = useState('');
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+  const onSubmit: SubmitHandler<FormInputsPropsInterface> = (data) => {
+    if (!selectedMusicFile) return;
+
     console.log(data);
+
+    const formData = new FormData();
+    formData.append('songTitle', data.songTitle);
+    formData.append('artistName', data.artistName);
+    formData.append('music', selectedMusicFile);
+    formData.append('coverImage', selectedImage || '');
+
+    axios
+      .post('', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      });
   };
 
-  // Function to handle the image click and trigger the file input
-  const handleImageClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+  const handleMusicFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const music = file.name.split('.').pop()?.toLowerCase();
+      if (music !== 'mp3') {
+        alert('Please upload a music file');
+        return;
+      }
+      setSelectedMusicFile(file);
+      setMusicFileName(file.name);
     }
   };
 
-  // Function to handle the file input change and store the uploaded image
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string); // Store the uploaded image URL
+        setSelectedImage(reader.result as string);
       };
-      reader.readAsDataURL(file); // Convert the file to a data URL
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleMusicUploadClick = () => {
+    if (musicFileInputRef.current) {
+      musicFileInputRef.current.click();
+    }
+  };
+
+  const handleCoverUploadClick = () => {
+    if (coverImageInputRef.current) {
+      coverImageInputRef.current.click();
     }
   };
 
@@ -49,56 +84,82 @@ const MusicAdd = () => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <h1>{'All Song > Add Song'}</h1>
-        <AddNewItem href="/" />
+        <AddNewItem href="" />
       </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <div>
-            <input
-              {...register('songTitle', { required: 'Song title is required' })}
-              type="text"
-              placeholder="Enter song title"
-            />
-            {errors.songTitle && <p>{errors.songTitle.message}</p>}
-
-            <input
-              {...register('artistName', {
-                required: 'Artist name is required',
-              })}
-              type="text"
-              placeholder="Enter artist name"
-            />
-            {errors.artistName && <p>{errors.artistName.message}</p>}
-
-            <input
-              {...register('albumName', { required: 'Album name is required' })}
-              type="text"
-              placeholder="Enter album name"
-            />
-            {errors.albumName && <p>{errors.albumName.message}</p>}
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        <div className={styles.formContainer}>
+          <div className={styles.inputsContainer}>
+            <div className={styles.inputContainer}>
+              <p>Song Title</p>
+              <input
+                {...register('songTitle', {
+                  required: 'Song title is required',
+                })}
+                type="text"
+                placeholder="Enter song title"
+              />
+              {errors.songTitle && <span>{errors.songTitle.message}</span>}
+            </div>
+            <div className={styles.inputContainer}>
+              <p>Artist Name</p>
+              <input
+                {...register('artistName', {
+                  required: 'Artist name is required',
+                })}
+                type="text"
+                placeholder="Enter artist name"
+              />
+              {errors.artistName && <span>{errors.artistName.message}</span>}
+            </div>
+            <div className={styles.inputContainer}>
+              <p>Upload Music</p>
+              <div className={styles.uploadInputWrapper}>
+                <input
+                  {...register('music', {
+                    required: 'Music file is required',
+                  })}
+                  type="text"
+                  value={musicFileName}
+                  placeholder="Choose a file"
+                  readOnly
+                />
+                <button
+                  type="button"
+                  className={styles.uploadButton}
+                  onClick={handleMusicUploadClick}
+                >
+                  Choose File
+                </button>
+                <input
+                  type="file"
+                  ref={musicFileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleMusicFileChange}
+                />
+              </div>
+              {errors.music && <span>{errors.music.message}</span>}
+            </div>
           </div>
-
-          {/* Clickable image to trigger file upload */}
-          <Image
-            src={selectedImage || '/uplode.png'} // Display uploaded image or placeholder
-            alt="cover"
-            width={496}
-            height={240}
-            onClick={handleImageClick} // Handle image click
-            style={{ cursor: 'pointer' }} // Make it look clickable
-          />
-
-          {/* Hidden file input */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }} // Hide the file input
-            onChange={handleFileChange} // Handle file change
-          />
-
-          <div>
-            <button type="submit">Add Song</button>
+          <div className={styles.coverContainer}>
+            <p>Upload Cover Image</p>
+            <Image
+              src={selectedImage || '/uplode.png'}
+              alt="cover"
+              width={496}
+              height={240}
+              onClick={handleCoverUploadClick}
+              style={{ cursor: 'pointer' }}
+            />
+            <input
+              type="file"
+              ref={coverImageInputRef}
+              style={{ display: 'none' }}
+              onChange={handleCoverImageChange}
+            />
           </div>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button type="submit">Save</button>
         </div>
       </form>
     </div>
