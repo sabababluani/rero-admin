@@ -7,7 +7,7 @@ import { AddNewItemPropsInterfaces } from './interfaces/add-new-item-props.inter
 
 const AddNewItem = (props: AddNewItemPropsInterfaces) => {
   const pathname = usePathname();
-  const isActive = pathname === '/musicadd';
+  const isActive = pathname === '/musicadd' || pathname === '/artists/artistadd' || pathname === '/albums/albumadd';
 
   return (
     <Link href={props.href}>

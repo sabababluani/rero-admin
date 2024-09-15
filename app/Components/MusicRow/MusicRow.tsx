@@ -20,8 +20,8 @@ const MusicRow = (props: MusicRowPropsInterface) => {
   };
 
   const onHandleDeleteConfirm = () => {
-    setMusicDelete(false);
-    props.onDelete(props.id);
+    setMusicDelete(false); 
+    props.onDelete(props.id); 
   };
 
   return (
@@ -67,7 +67,7 @@ const MusicRow = (props: MusicRowPropsInterface) => {
       {musicDelete && (
         <SurePopup
           onCancel={() => setMusicDelete(false)}
-          onConfirm={onHandleDeleteConfirm}
+          onConfirm={onHandleDeleteConfirm} 
         />
       )}
     </>

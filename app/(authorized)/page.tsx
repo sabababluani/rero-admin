@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import AddNewItem from './Components/AddNewItem/AddNewItem';
-import MusicRow from './Components/MusicRow/MusicRow';
-import Search from './Components/Search/Search';
+
 import styles from './page.module.css';
-import { songData } from './utils/SongData';
+import { songData } from '../utils/SongData';
+import Search from '../Components/Search/Search';
+import MusicRow from '../Components/MusicRow/MusicRow';
+import AddNewItem from '../Components/AddNewItem/AddNewItem';
 
 export default function Home() {
   const [songs, setSongs] = useState(songData);
@@ -13,13 +14,15 @@ export default function Home() {
 
   const handleDelete = (id: number) => {
     setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+    setFilteredSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
   };
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    const results = songs.filter(song =>
-      song.music.toLowerCase().includes(lowercasedValue) ||
-      song.artistName.toLowerCase().includes(lowercasedValue)
+    const results = songs.filter(
+      (song) =>
+        song.music.toLowerCase().includes(lowercasedValue) ||
+        song.artistName.toLowerCase().includes(lowercasedValue),
     );
     setFilteredSongs(results);
   };
@@ -31,7 +34,7 @@ export default function Home() {
           <h1>All Songs</h1>
           <Search
             onSearch={handleSearch}
-            results={filteredSongs.map(song => song.music)}
+            results={filteredSongs.map((song) => song.music)}
           />
         </div>
         <div>

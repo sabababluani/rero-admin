@@ -8,18 +8,35 @@ import { artistData } from '../../artists/artistDummyData/artist-dummy-data';
 
 const TopArtists = () => {
   const [artists, setArtists] = useState(artistData);
+  const [filteredArtists, setFilteredArtists] = useState(artistData);
 
   const handleDelete = (id: number) => {
-    setArtists((prevSongs) => prevSongs.filter((song) => song.id !== id));
+    setArtists((prevArtists) => prevArtists.filter((artist) => artist.id !== id));
+    setFilteredArtists((prevFilteredArtists) =>
+      prevFilteredArtists.filter((artist) => artist.id !== id)
+    );
+  };
+
+  const handleSearch = (value: string) => {
+    const lowercasedValue = value.toLowerCase();
+    const results = artistData.filter((artist) =>
+      artist.artistName.toLowerCase().includes(lowercasedValue)
+    );
+    setFilteredArtists(results);
   };
 
   return (
     <div className={styles.wrapper}>
       <h1>Top Artists</h1>
-      <Search />
+      <Search
+        placeholder="Search top artists..."
+        onSearch={handleSearch}
+        results={filteredArtists.map((artist) => artist.artistName)}
+      />
       <div className={styles.container}>
-        {artists.map((item) => (
+        {filteredArtists.map((item) => (
           <ArtistRow
+            key={item.id}
             id={item.id}
             cover={item.cover}
             artistName={item.artistName}

@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import './globals.css';
-import SideHeader from './Components/SideHeader/SideHeader';
 
 export const metadata: Metadata = {
   title: 'Rero',
@@ -15,9 +13,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="layout">
-          <SideHeader />
-          {children}
+        <div className='children'>
+        {children}
         </div>
       </body>
     </html>
