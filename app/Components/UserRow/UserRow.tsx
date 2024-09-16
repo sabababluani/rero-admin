@@ -1,8 +1,11 @@
+'use client';
+
 import { useState } from 'react';
 import SurePopup from '../SurePopUp/SurePopUp';
 import styles from './UserRow.module.scss';
 import { UserRowPropsInterface } from './interface/user-row-props.interface';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const UserRow = (props: UserRowPropsInterface) => {
   const [userDelete, setUserDelete] = useState(false);
@@ -23,14 +26,13 @@ const UserRow = (props: UserRowPropsInterface) => {
       <div className={styles.container}>
         <p>{props.email}</p>
       </div>
-      <div className={styles.middleContainer}>
-        <p>{props.playlistCount} Playlists</p>
-      </div>
-
       <div className={styles.imageContainer}>
         <div className={styles.songCountContainer}>
           <p>{props.songCount} Songs</p>
         </div>
+        <Link href={`/users/${props.id}`} className={styles.editLink}>
+          <Image src="/edituser.png" alt="edit" width={28} height={28} />
+        </Link>
         <div
           className={props.isBlocked ? styles.highlightedBlock : styles.block}
           onClick={() => setUserBlock(true)}

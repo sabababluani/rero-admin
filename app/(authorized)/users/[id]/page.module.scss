@@ -1,0 +1,24 @@
+.wrapper h1 {
+  color: #fff;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.container p {
+  color: #fff;
+  font-size: 20px;
+}
+
+.password {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconsContainer {
+  display: flex;
+  align-items: center;
+}
+

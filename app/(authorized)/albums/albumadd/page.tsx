@@ -35,6 +35,7 @@ const AlbumAdd = () => {
       alert('Album name is required');
       return;
     }
+
     const formData = new FormData();
     formData.append('albumName', albumName);
 

@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { artistData } from './artistDummyData/artist-dummy-data';
 
 const Artist = () => {
-  const [artist, setArtist] = useState(artistData);
+  const [, setArtist] = useState(artistData);
   const [filteredArtists, setFilteredArtists] = useState(artistData);
 
   const handleDelete = (id: number) => {

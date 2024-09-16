@@ -19,7 +19,9 @@ const Users = () => {
 
   const handleDelete = (id: number) => {
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-    setFilteredUsers((prevFilteredUsers) => prevFilteredUsers.filter((user) => user.id !== id));
+    setFilteredUsers((prevFilteredUsers) =>
+      prevFilteredUsers.filter((user) => user.id !== id),
+    );
   };
 
   const handleBlock = (id: number) => {
@@ -28,6 +30,7 @@ const Users = () => {
         user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
       ),
     );
+    
     setFilteredUsers((prevFilteredUsers) =>
       prevFilteredUsers.map((user) =>
         user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
@@ -37,8 +40,8 @@ const Users = () => {
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    const results = users.filter(user =>
-      user.email.toLowerCase().includes(lowercasedValue)
+    const results = users.filter((user) =>
+      user.email.toLowerCase().includes(lowercasedValue),
     );
     setFilteredUsers(results);
   };
@@ -48,7 +51,7 @@ const Users = () => {
       <h1>All Users</h1>
       <Search
         onSearch={handleSearch}
-        results={filteredUsers.map(user => user.email)}
+        results={filteredUsers.map((user) => user.email)}
       />
       <div className={styles.container}>
         {filteredUsers.map((user) => (
