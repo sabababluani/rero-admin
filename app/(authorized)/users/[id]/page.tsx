@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { UserPropsInterface } from './interfaces/user-props.interface';
 import styles from './page.module.scss';
 import Image from 'next/image';
-import SurePopup from '@/app/Components/SurePopUp/SurePopUp';
 import { useParams } from 'next/navigation';
 import UserPlaylist from './components/UserPlaylist/UserPlaylist';
+import PasswordChangePopUp from '@/app/Components/PasswordChangePopUp/PasswordChangePopUp';
 
 const userData = [
   {
     id: 1,
-    email: 'user1',
+    email: 'user1@example.com',
     playlistCount: 5,
     songCount: 20,
     isBlocked: false,
@@ -23,41 +23,19 @@ const userData = [
         musics: [
           {
             id: 1,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
+            name: 'Song 1',
+            musicAudio: 'audio1.mp3',
+            coverImage: 'cover1.png',
+            duration: '3:45',
+            artistId: 'artist1',
           },
           {
             id: 2,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: 'Playlist 2',
-        musics: [
-          {
-            id: 1,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
-          },
-          {
-            id: 2,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
+            name: 'Song 2',
+            musicAudio: 'audio2.mp3',
+            coverImage: 'cover2.png',
+            duration: '4:20',
+            artistId: 'artist2',
           },
         ],
       },
@@ -65,11 +43,11 @@ const userData = [
   },
   {
     id: 2,
-    email: 'user2',
+    email: 'user2@example.com',
     playlistCount: 2,
     songCount: 12,
     isBlocked: false,
-    password: 'zdzdzdzddz',
+    password: 'abcdefg',
     playlists: [
       {
         id: 1,
@@ -77,41 +55,91 @@ const userData = [
         musics: [
           {
             id: 1,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
-          },
-          {
-            id: 2,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
+            name: 'Song A1',
+            musicAudio: 'audioA1.mp3',
+            coverImage: 'coverA1.png',
+            duration: '2:50',
+            artistId: 'artistA1',
           },
         ],
       },
       {
         id: 2,
-        name: 'Playlist B',
+        name: 'Playlist A',
         musics: [
           {
             id: 1,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
+            name: 'Song A1',
+            musicAudio: 'audioA1.mp3',
+            coverImage: 'coverA1.png',
+            duration: '2:50',
+            artistId: 'artistA1',
           },
+        ],
+      },
+      {
+        id: 3,
+        name: 'Playlist A',
+        musics: [
           {
-            id: 2,
-            name: 'string',
-            musicAudio: 'string',
-            coverImage: 'string',
-            duration: 'string',
-            artistId: 'string',
+            id: 1,
+            name: 'Song A1',
+            musicAudio: 'audioA1.mp3',
+            coverImage: 'coverA1.png',
+            duration: '2:50',
+            artistId: 'artistA1',
+          },
+        ],
+      },
+      {
+        id: 4,
+        name: 'Playlist A',
+        musics: [
+          {
+            id: 1,
+            name: 'Song A1',
+            musicAudio: 'audioA1.mp3',
+            coverImage: 'coverA1.png',
+            duration: '2:50',
+            artistId: 'artistA1',
+          },
+        ],
+      },
+      {
+        id: 5,
+        name: 'Playlist A',
+        musics: [
+          {
+            id: 1,
+            name: 'Song A1',
+            musicAudio: 'audioA1.mp3',
+            coverImage: 'coverA1.png',
+            duration: '2:50',
+            artistId: 'artistA1',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 3,
+    email: 'user3@example.com',
+    playlistCount: 3,
+    songCount: 15,
+    isBlocked: false,
+    password: 'zxcvbnm',
+    playlists: [
+      {
+        id: 1,
+        name: 'Playlist X',
+        musics: [
+          {
+            id: 1,
+            name: 'Song X1',
+            musicAudio: 'audioX1.mp3',
+            coverImage: 'coverX1.png',
+            duration: '3:30',
+            artistId: 'artistX1',
           },
         ],
       },
@@ -122,22 +150,12 @@ const userData = [
 const User = (props: UserPropsInterface) => {
   const { id } = useParams();
 
-  const userParam = userData.find((user) => user.id === +id);
-  if (!userParam) return null;
+  const userParam = userData.find((user) => user.id === parseInt(`${id}`, 10));
 
-  const [userDelete, setUserDelete] = useState(false);
-  const [userBlock, setUserBlock] = useState(false);
+  if (!userParam) return;
+
   const [playlistDelete, setPlaylistDelete] = useState(userParam.playlists);
-
-  const onHandleDeleteConfirm = () => {
-    setUserDelete(false);
-    props.onDelete(userParam.id);
-  };
-
-  const onHandleBlockConfirm = () => {
-    setUserBlock(false);
-    props.onBlock(userParam.id);
-  };
+  const [passwordChange, setPasswordChange] = useState(false);
 
   const handleDelete = (playlistId: number) => {
     setPlaylistDelete((prevPlaylist) =>
@@ -149,27 +167,20 @@ const User = (props: UserPropsInterface) => {
     <div className={styles.wrapper}>
       <h1>{`All user > ${userParam.email}`}</h1>
       <div className={styles.container}>
-        <div>
+        <div className={styles.containerWrapper}>
           <p>{userParam.email}</p>
           <div className={styles.password}>
             <p>{userParam.password}</p>
-            <Image src="/Pen.png" alt="pen" width={24} height={24} />
-          </div>
-          <div className={styles.iconsContainer}>
-            <div
-              className={
-                userParam.isBlocked ? styles.highlightedBlock : styles.block
-              }
-              onClick={() => setUserBlock(true)}
-            >
-              <Image src="/block.png" alt="block" width={28} height={28} />
-            </div>
-            <div className={styles.delete} onClick={() => setUserDelete(true)}>
-              <Image src="/garbage.png" alt="delete" width={28} height={28} />
-            </div>
+            <Image
+              src="/Pen.png"
+              alt="pen"
+              width={24}
+              height={24}
+              onClick={() => setPasswordChange(true)}
+            />
           </div>
         </div>
-        <div>
+        <div className={styles.playlistContainer}>
           <h2>User Playlists</h2>
           <div className={styles.mapContainer}>
             {playlistDelete.map((playlist) => (
@@ -184,16 +195,12 @@ const User = (props: UserPropsInterface) => {
           </div>
         </div>
       </div>
-      {userBlock && (
-        <SurePopup
-          onCancel={() => setUserBlock(false)}
-          onConfirm={onHandleBlockConfirm}
-        />
-      )}
-      {userDelete && (
-        <SurePopup
-          onCancel={() => setUserDelete(false)}
-          onConfirm={onHandleDeleteConfirm}
+      {passwordChange && (
+        <PasswordChangePopUp
+          setClose={() => setPasswordChange(false)}
+          currentPassword={userParam.password}
+          newPassword={''}
+          confirmPassword={''}
         />
       )}
     </div>

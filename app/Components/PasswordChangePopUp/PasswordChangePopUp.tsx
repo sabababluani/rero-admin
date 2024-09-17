@@ -1,9 +1,8 @@
 import { useForm } from 'react-hook-form';
-import Button from '../Button/Button';
 import styles from './PasswordChangePopUp.module.scss';
 import { PasswordChangePopUpPropsInterface } from './interfaces/password-change-pop-up-props.interface';
 
-const PasswordChangePopUp = () => {
+const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
   const {
     register,
     handleSubmit,
@@ -22,12 +21,12 @@ const PasswordChangePopUp = () => {
           <div className={styles.inputContainer}>
             <p>Current Password</p>
             <input
-              type="password"
-              {...register('currentPassword', {
-                required: 'Current password is required',
-              })}
+              type="text"
+              value={props.currentPassword}
             />
-            {errors.currentPassword && <p>{errors.currentPassword.message}</p>}
+            {errors.currentPassword && (
+              <span>{errors.currentPassword.message}</span>
+            )}
           </div>
           <div className={styles.inputContainer}>
             <p>New Password</p>
@@ -41,7 +40,7 @@ const PasswordChangePopUp = () => {
                 },
               })}
             />
-            {errors.newPassword && <p>{errors.newPassword.message}</p>}
+            {errors.newPassword && <span>{errors.newPassword.message}</span>}
           </div>
           <div className={styles.inputContainer}>
             <p>Confirm New Password</p>
@@ -53,11 +52,21 @@ const PasswordChangePopUp = () => {
                   value === newPassword || 'Passwords do not match',
               })}
             />
-            {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && (
+              <span>{errors.confirmPassword.message}</span>
+            )}
           </div>
           <div className={styles.buttonGroup}>
-            <button type="button" className={styles.cancel}>Cancel</button>
-            <button type="submit" className={styles.confirm}>Confirm</button>
+            <button
+              type="button"
+              className={styles.cancel}
+              onClick={() => props.setClose(false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" className={styles.confirm}>
+              Confirm
+            </button>
           </div>
         </form>
       </div>

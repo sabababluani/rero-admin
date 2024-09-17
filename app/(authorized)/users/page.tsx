@@ -6,11 +6,41 @@ import UserRow from '@/app/Components/UserRow/UserRow';
 import { useState } from 'react';
 
 const userData = [
-  { id: 1, email: 'user1', playlistCount: 5, songCount: 20, isBlocked: false },
-  { id: 2, email: 'user2', playlistCount: 2, songCount: 12, isBlocked: false },
-  { id: 3, email: 'user3', playlistCount: 7, songCount: 33, isBlocked: false },
-  { id: 4, email: 'user4', playlistCount: 1, songCount: 8, isBlocked: false },
-  { id: 5, email: 'user5', playlistCount: 0, songCount: 5, isBlocked: false },
+  {
+    id: 1,
+    email: 'user1@example.com',
+    playlistCount: 5,
+    songCount: 20,
+    isBlocked: false,
+  },
+  {
+    id: 2,
+    email: 'user2@example.com',
+    playlistCount: 2,
+    songCount: 12,
+    isBlocked: false,
+  },
+  {
+    id: 3,
+    email: 'user3@example.com',
+    playlistCount: 7,
+    songCount: 33,
+    isBlocked: false,
+  },
+  {
+    id: 4,
+    email: 'user4@example.com',
+    playlistCount: 1,
+    songCount: 8,
+    isBlocked: false,
+  },
+  {
+    id: 5,
+    email: 'user5@example.com',
+    playlistCount: 0,
+    songCount: 5,
+    isBlocked: false,
+  },
 ];
 
 const Users = () => {
@@ -30,7 +60,6 @@ const Users = () => {
         user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
       ),
     );
-    
     setFilteredUsers((prevFilteredUsers) =>
       prevFilteredUsers.map((user) =>
         user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,

@@ -4,9 +4,10 @@ import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
 import styles from './page.module.scss';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
-import axios from 'axios';
+import { useRef, useState, useEffect } from 'react';
+import BaseApi from '@/app/api/BaseApi';
 import { FormInputsPropsInterface } from './interfaces/form-inputs-props.interface';
+import { AlbumPagePropsInterface } from '@/app/Components/AlbumRow/interfaces/album-row-props.interface';
 
 const MusicAdd = () => {
   const {
@@ -20,36 +21,55 @@ const MusicAdd = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedMusicFile, setSelectedMusicFile] = useState<File | null>(null);
   const [musicFileName, setMusicFileName] = useState('');
+  const [albums, setAlbums] = useState<AlbumPagePropsInterface[]>([]);
+  const [artists, setArtists] = useState<AlbumPagePropsInterface[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const albumResponse = await BaseApi.get('/album');
+        setAlbums(albumResponse.data);
+
+        const artistResponse = await BaseApi.get('/artist');
+        setArtists(artistResponse.data);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const onSubmit: SubmitHandler<FormInputsPropsInterface> = (data) => {
-    if (!selectedMusicFile) return;
-
-    console.log(data);
+    if (!selectedMusicFile || !data.albumId || !data.artistId) return;
 
     const formData = new FormData();
-    formData.append('songTitle', data.songTitle);
-    formData.append('artistName', data.artistName);
-    formData.append('music', selectedMusicFile);
+    formData.append('name', data.name);
+    formData.append('musicAudio', selectedMusicFile);
+    if (selectedImage) formData.append('coverImage', selectedImage);
+    formData.append('albumId', data.albumId.toString());
+    formData.append('artistId', data.artistId.toString());
     formData.append('coverImage', selectedImage || '');
 
-    axios
-      .post('', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+    BaseApi.post('/music', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
       .then((response) => {
         console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Failed to submit form:', error);
       });
   };
 
   const handleMusicFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (file) {
       const music = file.name.split('.').pop()?.toLowerCase();
       if (music !== 'mp3') {
-        alert('Please upload a music file');
+        alert('Please upload a valid MP3 music file');
         return;
       }
       setSelectedMusicFile(file);
@@ -60,6 +80,12 @@ const MusicAdd = () => {
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const fileType = file.type.split('/')[0];
+      if (fileType !== 'image') {
+        alert('Please upload a valid image file.');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
@@ -92,30 +118,19 @@ const MusicAdd = () => {
             <div className={styles.inputContainer}>
               <p>Song Title</p>
               <input
-                {...register('songTitle', {
+                {...register('name', {
                   required: 'Song title is required',
                 })}
                 type="text"
                 placeholder="Enter song title"
               />
-              {errors.songTitle && <span>{errors.songTitle.message}</span>}
-            </div>
-            <div className={styles.inputContainer}>
-              <p>Artist Name</p>
-              <input
-                {...register('artistName', {
-                  required: 'Artist name is required',
-                })}
-                type="text"
-                placeholder="Enter artist name"
-              />
-              {errors.artistName && <span>{errors.artistName.message}</span>}
+              {errors.name && <span>{errors.name.message}</span>}
             </div>
             <div className={styles.inputContainer}>
               <p>Upload Music</p>
               <div className={styles.uploadInputWrapper}>
                 <input
-                  {...register('music', {
+                  {...register('musicAudio', {
                     required: 'Music file is required',
                   })}
                   type="text"
@@ -137,7 +152,7 @@ const MusicAdd = () => {
                   onChange={handleMusicFileChange}
                 />
               </div>
-              {errors.music && <span>{errors.music.message}</span>}
+              {errors.musicAudio && <span>{errors.musicAudio.message}</span>}
             </div>
           </div>
           <div className={styles.coverContainer}>
@@ -157,6 +172,40 @@ const MusicAdd = () => {
               onChange={handleCoverImageChange}
             />
           </div>
+        </div>
+
+        <div className={styles.inputContainer}>
+          <p>Select Album</p>
+          <select
+            {...register('albumId', {
+              required: 'Album selection is required',
+            })}
+          >
+            <option value="">Select an album</option>
+            {albums.map((album) => (
+              <option key={album.id} value={album.id}>
+                {album.name}
+              </option>
+            ))}
+          </select>
+          {errors.albumId && <span>{errors.albumId.message}</span>}
+        </div>
+
+        <div className={styles.inputContainer}>
+          <p>Select Artist</p>
+          <select
+            {...register('artistId', {
+              required: 'Artist selection is required',
+            })}
+          >
+            <option>Select an artist</option>
+            {artists.map((artist) => (
+              <option key={artist.id} value={artist.id}>
+                {artist.artistName}
+              </option>
+            ))}
+          </select>
+          {errors.artistId && <span>{errors.artistId.message}</span>}
         </div>
         <div className={styles.buttonContainer}>
           <button type="submit">Save</button>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SurePopup from '../SurePopUp/SurePopUp';
 import SelectTop from '../SelectTop/SelectTop';
 import { AlbumPropsInterface } from './interfaces/album-row-props.interface';
+import BaseApi from '../../api/BaseApi';
 
 const AlbumRow = (props: AlbumPropsInterface) => {
   const [musicDelete, setMusicDelete] = useState(false);
@@ -13,24 +14,41 @@ const AlbumRow = (props: AlbumPropsInterface) => {
     setMusicDelete(true);
   };
 
-  const onHandleDeleteConfirm = () => {
+  const onHandleDeleteConfirm = async () => {
     setMusicDelete(false);
-    props.onDelete(props.id);
+    try {
+      await BaseApi.delete(`/albums/${props.id}`);
+      props.onDelete(props.id);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const onClickStar = () => {
-    setStarActive(true);
+  const onClickStar = async () => {
+    setStarActive(!starActive);
+    try {
+      await BaseApi.put(`/albums/${props.id}/favorite`, {
+        favorite: !starActive,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <Image src={props.cover} alt="artist cover" width={60} height={60} />
-          <p>{props.album}</p>
+          <Image
+            src={props.albumCover}
+            alt="artist cover"
+            width={60}
+            height={60}
+          />
+          <p>{props.name}</p>
         </div>
         <div>
-          <p>${props.artistName}</p>
+          <p>{props.artistName}</p>
         </div>
         <div className={styles.actionContainer}>
           <div

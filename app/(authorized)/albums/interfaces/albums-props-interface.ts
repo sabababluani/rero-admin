@@ -1,7 +1,7 @@
 export interface AlbumPropsInterface {
   id: number;
-  cover: string;
-  album: string;
+  albumCover: string;
+  name: string;
   artistName: string;
   songCount: number;
 }
