@@ -1,30 +1,44 @@
 'use client';
 
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import Search from '@/app/Components/Search/Search';
 import styles from './page.module.css';
-import { songData } from '../utils/SongData';
-import Search from '../Components/Search/Search';
-import MusicRow from '../Components/MusicRow/MusicRow';
-import AddNewItem from '../Components/AddNewItem/AddNewItem';
+import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
+import MusicRow from '@/app/Components/MusicRow/MusicRow';
+import BaseApi from '@/app/api/BaseApi';
+import { MusicPropsInterface } from './artists/interface/artist-page-props.interface';
 
-export default function Home() {
-  const [songs, setSongs] = useState(songData);
-  const [filteredSongs, setFilteredSongs] = useState(songData);
+const Home = () => {
+  const [songs, setSongs] = useState<MusicPropsInterface[]>([]);
+  const [filteredSongs, setFilteredSongs] = useState<MusicPropsInterface[]>([]);
+
+  useEffect(() => {
+    BaseApi.get('/music')
+      .then((response) => {
+        setSongs(response.data);
+        setFilteredSongs(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleDelete = (id: number) => {
-    setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
-    setFilteredSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+    BaseApi.delete(`/songs/${id}`)
+      .then(() => {
+        setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+        setFilteredSongs((prevFilteredSongs) =>
+          prevFilteredSongs.filter((song) => song.id !== id),
+        );
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    const results = songs.filter(
-      (song) =>
-        song.music.toLowerCase().includes(lowercasedValue) ||
-        song.artistName.toLowerCase().includes(lowercasedValue),
-    );
-    setFilteredSongs(results);
+    BaseApi.get(`/search?query=${lowercasedValue}`)
+      .then((response) => {
+        setFilteredSongs(response.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -34,7 +48,7 @@ export default function Home() {
           <h1>All Songs</h1>
           <Search
             onSearch={handleSearch}
-            results={filteredSongs.map((song) => song.music)}
+            results={filteredSongs.map((song) => song.name)}
           />
         </div>
         <div>
@@ -46,10 +60,10 @@ export default function Home() {
           <MusicRow
             key={song.id}
             id={song.id}
-            cover={song.cover}
-            music={song.music}
-            album={song.album}
-            artistName={song.artistName}
+            cover={song.coverImage}
+            music={song.name}
+            album={song.album?.name}
+            artistName={song.artist?.artistName}
             duration={song.duration}
             onDelete={handleDelete}
           />
@@ -57,4 +71,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

@@ -17,7 +17,7 @@ const AlbumRow = (props: AlbumPropsInterface) => {
   const onHandleDeleteConfirm = async () => {
     setMusicDelete(false);
     try {
-      await BaseApi.delete(`/albums/${props.id}`);
+      await BaseApi.delete(`/album/${props.id}`);
       props.onDelete(props.id);
     } catch (error) {
       console.log(error);
@@ -25,14 +25,7 @@ const AlbumRow = (props: AlbumPropsInterface) => {
   };
 
   const onClickStar = async () => {
-    setStarActive(!starActive);
-    try {
-      await BaseApi.put(`/albums/${props.id}/favorite`, {
-        favorite: !starActive,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    setStarActive(true);
   };
 
   return (

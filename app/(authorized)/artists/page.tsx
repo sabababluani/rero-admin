@@ -1,29 +1,46 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Search from '@/app/Components/Search/Search';
 import styles from './page.module.scss';
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
 import ArtistRow from '@/app/Components/ArtistRow/ArtistRow';
-import { useState } from 'react';
-import { artistData } from './artistDummyData/artist-dummy-data';
+import BaseApi from '@/app/api/BaseApi';
+import { ArtistPagePropsInterface } from './interface/artist-page-props.interface';
 
 const Artist = () => {
-  const [, setArtist] = useState(artistData);
-  const [filteredArtists, setFilteredArtists] = useState(artistData);
+  const [artists, setArtists] = useState<ArtistPagePropsInterface[]>([]);
+  const [filteredArtists, setFilteredArtists] = useState<ArtistPagePropsInterface[]>([]);
+
+  useEffect(() => {
+    BaseApi.get('/artist')
+      .then((response) => {
+        setArtists(response.data);
+        setFilteredArtists(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleDelete = (id: number) => {
-    setArtist((prevArtist) => prevArtist.filter((artist) => artist.id !== id));
-    setFilteredArtists((prevArtists) =>
-      prevArtists.filter((artist) => artist.id !== id),
-    );
+    BaseApi.delete(`/artist/${id}`)
+      .then(() => {
+        setArtists((prevArtists) =>
+          prevArtists.filter((artist) => artist.id !== id),
+        );
+        setFilteredArtists((prevFilteredArtists) =>
+          prevFilteredArtists.filter((artist) => artist.id !== id),
+        );
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    const results = artistData.filter((artist) =>
-      artist.artistName.toLowerCase().includes(lowercasedValue),
-    );
-    setFilteredArtists(results);
+    BaseApi.get(`/search?query=${lowercasedValue}`)
+      .then((response) => {
+        setFilteredArtists(response.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -44,10 +61,10 @@ const Artist = () => {
           <ArtistRow
             key={artist.id}
             id={artist.id}
-            cover={artist.cover}
+            cover={artist.artistPhoto}
             artistName={artist.artistName}
-            albums={artist.albums}
-            songCount={artist.songCount}
+            albums={artist.albums.length}
+            songCount={artist.musics.length}
             onDelete={handleDelete}
           />
         ))}

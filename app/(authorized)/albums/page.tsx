@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Search from '@/app/Components/Search/Search';
 import styles from './page.module.scss';
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
@@ -25,7 +24,7 @@ const Albums = () => {
   }, []);
 
   const handleDelete = (id: number) => {
-    BaseApi.delete(`/albums/${id}`)
+    BaseApi.delete(`/album/${id}`)
       .then(() => {
         setAlbums((prevAlbums) =>
           prevAlbums.filter((album) => album.id !== id),
@@ -54,7 +53,7 @@ const Albums = () => {
           <Search
             placeholder="Search albums..."
             onSearch={handleSearch}
-            results={filteredAlbums.map((album) => album.artist.artistName)}
+            results={filteredAlbums.map((album) => album.artist?.artistName)}
           />
         </div>
         <AddNewItem href="/albums/albumadd" />
@@ -65,7 +64,7 @@ const Albums = () => {
             key={album.id}
             id={album.id}
             albumCover={album.musics[0]?.coverImage ?? '/placeholder.png'}
-            artistName={album.artist.artistName}
+            artistName={album.artist?.artistName}
             songCount={album.musics.length}
             onDelete={handleDelete}
             name={album.name}

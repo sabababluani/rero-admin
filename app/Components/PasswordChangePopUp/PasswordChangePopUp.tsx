@@ -19,16 +19,6 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
         <h1>Change Password</h1>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div className={styles.inputContainer}>
-            <p>Current Password</p>
-            <input
-              type="text"
-              value={props.currentPassword}
-            />
-            {errors.currentPassword && (
-              <span>{errors.currentPassword.message}</span>
-            )}
-          </div>
-          <div className={styles.inputContainer}>
             <p>New Password</p>
             <input
               type="password"
