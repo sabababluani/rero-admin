@@ -7,6 +7,7 @@ import styles from './page.module.scss';
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
 import BaseApi from '@/app/api/BaseApi';
 import { AlbumCreatePropsInterface } from './interfaces/album-create-props.interface';
+import { AlbumPagePropsInterface } from '@/app/Components/AlbumRow/interfaces/album-row-props.interface';
 
 const AlbumAdd = () => {
   const {
@@ -17,6 +18,20 @@ const AlbumAdd = () => {
 
   const [selectedCoverImage, setSelectedCoverImage] =
     useState<string>('/uplode.png');
+  const [artists, setArtists] = useState<AlbumPagePropsInterface[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const artistResponse = await BaseApi.get('/artist');
+        setArtists(artistResponse.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const validateImageType = (file: File) => {
     const allowedImageTypes = [
@@ -37,13 +52,12 @@ const AlbumAdd = () => {
   };
 
   const onSubmit = async (values: AlbumCreatePropsInterface) => {
-    console.log(values);
-
     const formData = new FormData();
-    formData.append('albumName', values.name);
+    formData.append('name', values.name);
+    formData.append('artistId', values.artistId.toString());
 
     if (values.cover[0]) {
-      formData.append('coverImage', values.cover[0]);
+      formData.append('cover', values.cover[0]);
     }
 
     try {
@@ -112,6 +126,24 @@ const AlbumAdd = () => {
                   <span>{String(errors.name.message)}</span>
                 )}
               </div>
+            </div>
+            <div className={styles.inputContainer}>
+              <p>Select Artist</p>
+              <select
+                {...register('artistId', {
+                  required: 'Artist selection is required',
+                })}
+              >
+                <option>Select an artist</option>
+                {artists.map((artist) => (
+                  <option key={artist.id} value={artist.id}>
+                    {artist.artistName}
+                  </option>
+                ))}
+              </select>
+              {errors.artistId?.message && (
+                <span>{String(errors.artistId.message)}</span>
+              )}
             </div>
           </div>
           <div className={styles.buttonContainer}>

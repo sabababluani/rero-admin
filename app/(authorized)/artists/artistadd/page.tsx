@@ -33,10 +33,10 @@ const ArtistAdd = () => {
   const onSubmit = async (values: ArtistCreatePropsInterface) => {
     const formData = new FormData();
     formData.append('artistName', values.artistName);
-    formData.append('artistBio', values.biography);
+    formData.append('biography', values.biography);
 
-    if (values.cover[0]) {
-      formData.append('coverImage', values.cover[0]);
+    if (values.artistPhoto[0]) {
+      formData.append('artistPhoto', values.artistPhoto[0]);
     }
 
     try {
@@ -106,14 +106,14 @@ const ArtistAdd = () => {
               <input
                 type="file"
                 id="coverImage"
-                {...register('cover', {
+                {...register('artistPhoto', {
                   required: 'Cover image is required',
                   onChange: handleCoverImageChange,
                 })}
                 style={{ display: 'none' }}
               />
-              {errors.cover?.message && (
-                <span>{String(errors.cover.message)}</span>
+              {errors.artistPhoto?.message && (
+                <span>{String(errors.artistPhoto.message)}</span>
               )}
             </div>
           </div>

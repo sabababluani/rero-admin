@@ -1,30 +1,61 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './page.module.scss';
-import { songData } from '@/app/utils/SongData';
 import Search from '@/app/Components/Search/Search';
 import MusicRow from '@/app/Components/MusicRow/MusicRow';
+import BaseApi from '@/app/api/BaseApi';
+import { MusicPropsInterface } from '../../artists/interface/artist-page-props.interface';
+
+export const getChartsLength = (songs: MusicPropsInterface[]) => {
+  return songs.length;
+};
 
 const TopCharts = () => {
-  const [songs, setSongs] = useState(songData);
-  const [filteredSongs, setFilteredSongs] = useState(songData);
+  const [songs, setSongs] = useState<MusicPropsInterface[]>([]);
+  const [filteredSongs, setFilteredSongs] = useState<MusicPropsInterface[]>([]);
 
-  const handleDelete = (id: number) => {
-    setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
-    setFilteredSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await BaseApi.get('/listeners');
+        setSongs(response.data);
+        setFilteredSongs(response.data);
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+      }
+    };
+
+    fetchSongs();
+  }, []);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await BaseApi.delete(`/music/${id}`);
+      setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+      setFilteredSongs((prevFilteredSongs) =>
+        prevFilteredSongs.filter((song) => song.id !== id),
+      );
+    } catch (error) {
+      console.error('Error deleting song:', error);
+    }
   };
 
-  const handleSearch = (value: string) => {
+  const handleSearch = async (value: string) => {
+    if (value.trim() === '') {
+      setFilteredSongs(songs);
+      return;
+    }
+
     const lowercasedValue = value.toLowerCase();
-    const results = songs.filter(
-      (song) =>
-        song.music.toLowerCase().includes(lowercasedValue) ||
-        song.artistName.toLowerCase().includes(lowercasedValue),
-    );
-    setFilteredSongs(results);
+    try {
+      const response = await BaseApi.get(`/search?query=${lowercasedValue}`);
+      setFilteredSongs(response.data.musics || []);
+    } catch (error) {
+      console.error('Error searching songs:', error);
+    }
   };
-
+  
   return (
     <div className={styles.wrapper}>
       <div className={styles.headerContainer}>
@@ -32,7 +63,7 @@ const TopCharts = () => {
           <h1>Top Charts</h1>
           <Search
             onSearch={handleSearch}
-            results={filteredSongs.map((song) => song.music)}
+            results={filteredSongs.map((song) => song.name)}
           />
         </div>
       </div>
@@ -41,10 +72,10 @@ const TopCharts = () => {
           <MusicRow
             key={song.id}
             id={song.id}
-            cover={song.cover}
-            music={song.music}
-            album={song.album}
-            artistName={song.artistName}
+            cover={song.coverImage}
+            music={song.name}
+            album={song.album?.name}
+            artistName={song.artist.artistName}
             duration={song.duration}
             onDelete={handleDelete}
           />

@@ -38,7 +38,6 @@ const Home = () => {
       setFilteredSongs(response.data.musics);
     });
   };
-  console.log(filteredSongs);
 
   return (
     <div className={styles.wrapper}>

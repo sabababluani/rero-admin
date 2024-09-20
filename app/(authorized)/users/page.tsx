@@ -49,6 +49,7 @@ const Users = () => {
 
   const handleDelete = (id: number) => {
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+
     setFilteredUsers((prevFilteredUsers) =>
       prevFilteredUsers.filter((user) => user.id !== id),
     );
@@ -60,6 +61,7 @@ const Users = () => {
         user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
       ),
     );
+
     setFilteredUsers((prevFilteredUsers) =>
       prevFilteredUsers.map((user) =>
         user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
