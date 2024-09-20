@@ -2,7 +2,7 @@
 
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
 import styles from './page.module.scss';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import BaseApi from '@/app/api/BaseApi';
@@ -46,14 +46,32 @@ const MusicAdd = () => {
     data.append('musicAudio', values.musicAudio[0]);
     data.append('coverImage', values.coverImage[0]);
 
-
-    console.log(values);
-    
     BaseApi.post('/music', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
+  };
+
+  const handleMusicFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type === 'audio/mpeg') {
+      setSelectedMusicFile(file.name);
+    } else {
+      alert('Please select a valid .mp3 file.');
+      e.target.value = '';
+    }
+  };
+
+  const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const validImageTypes = ['image/jpeg', 'image/png'];
+    if (file && validImageTypes.includes(file.type)) {
+      setSelectedCoverImage(URL.createObjectURL(file));
+    } else {
+      alert('Please select a valid image file (.jpg or .png).');
+      e.target.value = '';
+    }
   };
 
   return (
@@ -87,81 +105,89 @@ const MusicAdd = () => {
                   readOnly
                   placeholder="Choose a music file"
                 />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('musicAudio')?.click()}
+                  className={styles.uploadButton}
+                >
+                  Select Music
+                </button>
                 <input
                   type="file"
+                  id="musicAudio"
                   {...register('musicAudio', {
                     required: 'Music file is required',
                   })}
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) {
-                      setSelectedMusicFile(e.target.files[0].name);
-                    }
-                  }}
+                  onChange={handleMusicFileChange}
+                  className={styles.inputFile}
+                  style={{ display: 'none' }}
+                  accept=".mp3"
                 />
               </div>
-              {errors.file?.message && (
-                <span>{String(errors.file.message)}</span>
+              {errors.musicAudio?.message && (
+                <span>{String(errors.musicAudio.message)}</span>
+              )}
+            </div>
+            <div className={styles.inputContainer}>
+              <p>Select Album</p>
+              <select
+                {...register('albumId', {
+                  required: 'Album selection is required',
+                })}
+              >
+                <option>Select an album</option>
+                {albums.map((album) => (
+                  <option key={album.id} value={album.id}>
+                    {album.name}
+                  </option>
+                ))}
+              </select>
+              {errors.albumId?.message && (
+                <span>{String(errors.albumId.message)}</span>
+              )}
+            </div>
+
+            <div className={styles.inputContainer}>
+              <p>Select Artist</p>
+              <select
+                {...register('artistId', {
+                  required: 'Artist selection is required',
+                })}
+              >
+                <option>Select an artist</option>
+                {artists.map((artist) => (
+                  <option key={artist.id} value={artist.id}>
+                    {artist.artistName}
+                  </option>
+                ))}
+              </select>
+              {errors.artistId?.message && (
+                <span>{String(errors.artistId.message)}</span>
               )}
             </div>
           </div>
           <div className={styles.coverContainer}>
             <p>Upload Cover Image</p>
-            <Image
-              src={selectedCoverImage}
-              alt="upload"
-              width={496}
-              height={240}
-            />
+            <label htmlFor="coverImage">
+              <Image
+                src={selectedCoverImage}
+                alt="upload"
+                width={496}
+                height={240}
+                style={{ cursor: 'pointer' }}
+              />
+            </label>
             <input
               type="file"
+              id="coverImage"
               {...register('coverImage', {
                 required: 'Cover image is required',
               })}
-              onChange={(e) => {
-                if (e.target.files?.[0]) {
-                  setSelectedCoverImage(URL.createObjectURL(e.target.files[0]));
-                }
-              }}
+              onChange={handleCoverImageChange}
+              style={{ display: 'none' }}
+              accept=".jpg,.jpeg,.png"
             />
           </div>
-        </div>
-
-        <div className={styles.inputContainer}>
-          <p>Select Album</p>
-          <select
-            {...register('albumId', {
-              required: 'Album selection is required',
-            })}
-          >
-            <option>Select an album</option>
-            {albums.map((album) => (
-              <option key={album.id} value={album.id}>
-                {album.name}
-              </option>
-            ))}
-          </select>
-          {errors.albumId?.message && (
-            <span>{String(errors.albumId.message)}</span>
-          )}
-        </div>
-
-        <div className={styles.inputContainer}>
-          <p>Select Artist</p>
-          <select
-            {...register('artistId', {
-              required: 'Artist selection is required',
-            })}
-          >
-            <option>Select an artist</option>
-            {artists.map((artist) => (
-              <option key={artist.id} value={artist.id}>
-                {artist.artistName}
-              </option>
-            ))}
-          </select>
-          {errors.artistId?.message && (
-            <span>{String(errors.artistId.message)}</span>
-          )}
         </div>
         <div className={styles.buttonContainer}>
           <button type="submit">Save</button>

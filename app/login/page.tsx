@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import BaseApi from '../api/BaseApi';
 import styles from './page.module.scss';
 import { LoginPropsInterface } from './interfaces/login-props.interface';
+import { setCookie } from '../Helpers/cookies';
 
 const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -31,8 +32,8 @@ const Login = () => {
 
     BaseApi.post('/auth/login', data)
       .then((response) => {
+        setCookie('token', response.data.accessToken, 60);
         router.push('/');
-        localStorage.setItem('token', response.data.accessToken);
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -62,7 +63,7 @@ const Login = () => {
     <div className={styles.mainContainer}>
       <div className={styles.fullscreenContainer}>
         <div className={styles.loginHeader}>
-          <Image src="/logo.png" alt="logo" width={100} height={100} />
+          <Image src="/favicon.png" alt="logo" width={100} height={100} />
           <p>Log In</p>
         </div>
         <form className={styles.loginInfo} onSubmit={handleSubmit(onSubmit)}>
@@ -101,9 +102,7 @@ const Login = () => {
               )}
             </div>
             <div className={styles.inputContainer}>
-              <p>
-                Password
-              </p>
+              <p>Password</p>
               <input
                 type="password"
                 className={errors.password ? styles.erroredInput : styles.input}
@@ -144,13 +143,8 @@ const Login = () => {
                   checked={rememberMe}
                   onChange={handleCheckboxChange}
                 />
-                <p> 
-                  Remember Me
-                </p>
+                <p>Remember Me</p>
               </div>
-              <Link href="/register" className={styles.link}>
-                Create account
-              </Link>
             </div>
             <input
               type="submit"

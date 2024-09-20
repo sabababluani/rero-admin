@@ -1,58 +1,54 @@
 'use client';
 
-import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
-import styles from './page.module.scss';
+import { useState } from 'react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
-import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import BaseApi from '@/app/api/BaseApi';
+import styles from './page.module.scss';
+import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
+import { ArtistCreatePropsInterface } from './interfaces/artist-create-props.interface';
 
 const ArtistAdd = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ArtistCreatePropsInterface>();
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const coverImageInputRef = useRef<HTMLInputElement | null>(null);
-  const [artistName, setArtistName] = useState('');
-  const [artistBio, setArtistBio] = useState('');
+
+  const validateImageType = (file: File) => {
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    return allowedImageTypes.includes(file.type);
+  };
 
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (e.target.files?.[0] && validateImageType(e.target.files[0])) {
+      setSelectedImage(URL.createObjectURL(e.target.files[0]));
+    } else {
+      alert('Please upload a valid image file (jpeg, png, or gif).');
     }
   };
 
-  const handleUploadClick = () => {
-    if (coverImageInputRef.current) {
-      coverImageInputRef.current.click();
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!artistName) {
-      alert('Artist name is required');
-      return;
-    }
+  const onSubmit = async (values: ArtistCreatePropsInterface) => {
     const formData = new FormData();
-    formData.append('artistName', artistName);
-    formData.append('artistBio', artistBio);
+    formData.append('artistName', values.artistName);
+    formData.append('artistBio', values.biography);
 
-    if (coverImageInputRef.current?.files?.[0]) {
-      formData.append('coverImage', coverImageInputRef.current.files[0]);
+    if (values.cover[0]) {
+      formData.append('coverImage', values.cover[0]);
     }
-    //TO DO AXIOS
-    axios
-      .post('', formData, {
+
+    try {
+      const response = await BaseApi.post('/artist', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error adding artist:', error);
+    }
   };
 
   return (
@@ -62,7 +58,10 @@ const ArtistAdd = () => {
         <AddNewItem href="" />
       </div>
       <div className={styles.wrapper}>
-        <form onSubmit={handleSubmit} className={styles.formContainer}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={styles.formContainer}
+        >
           <div className={styles.form}>
             <div className={styles.inputsContainer}>
               <div className={styles.inputContainer}>
@@ -70,9 +69,13 @@ const ArtistAdd = () => {
                 <input
                   type="text"
                   placeholder="Enter artist name"
-                  value={artistName}
-                  onChange={(e) => setArtistName(e.target.value)}
+                  {...register('artistName', {
+                    required: 'Artist name is required',
+                  })}
                 />
+                {errors.artistName?.message && (
+                  <span>{String(errors.artistName.message)}</span>
+                )}
               </div>
               <div className={styles.textareaContainer}>
                 <p>Artist Biography</p>
@@ -80,27 +83,38 @@ const ArtistAdd = () => {
                   rows={4}
                   cols={50}
                   placeholder="Enter artist biography"
-                  value={artistBio}
-                  onChange={(e) => setArtistBio(e.target.value)}
+                  {...register('biography', {
+                    required: 'Artist biography is required',
+                  })}
                 />
+                {errors.biography?.message && (
+                  <span>{String(errors.biography.message)}</span>
+                )}
               </div>
             </div>
             <div className={styles.coverContainer}>
               <p>Upload Cover Image</p>
-              <Image
-                src={selectedImage || '/uplode.png'}
-                alt="cover"
-                width={496}
-                height={220}
-                onClick={handleUploadClick}
-                style={{ cursor: 'pointer' }}
-              />
+              <label htmlFor="coverImage">
+                <Image
+                  src={selectedImage || '/uplode.png'}
+                  alt="Upload Cover"
+                  width={496}
+                  height={220}
+                  style={{ cursor: 'pointer' }}
+                />
+              </label>
               <input
                 type="file"
-                ref={coverImageInputRef}
-                style={{ display: 'none' }}
+                id="coverImage"
+                {...register('cover', {
+                  required: 'Cover image is required',
+                })}
                 onChange={handleCoverImageChange}
+                style={{ display: 'none' }}
               />
+              {errors.cover?.message && (
+                <span>{String(errors.cover.message)}</span>
+              )}
             </div>
           </div>
           <div className={styles.buttonContainer}>

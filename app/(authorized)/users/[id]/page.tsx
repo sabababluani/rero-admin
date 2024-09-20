@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { UserPropsInterface } from './interfaces/user-props.interface';
 import styles from './page.module.scss';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -147,15 +146,16 @@ const userData = [
   },
 ];
 
-const User = (props: UserPropsInterface) => {
+const User = () => {
   const { id } = useParams();
+  const userParam = userData.find((user) => user.id === +id);
 
-  const userParam = userData.find((user) => user.id === parseInt(`${id}`, 10));
+  const [playlistDelete, setPlaylistDelete] = useState(
+    userParam?.playlists || [],
+  );
+  const [passwordChange, setPasswordChange] = useState(false);
 
   if (!userParam) return;
-
-  const [playlistDelete, setPlaylistDelete] = useState(userParam.playlists);
-  const [passwordChange, setPasswordChange] = useState(false);
 
   const handleDelete = (playlistId: number) => {
     setPlaylistDelete((prevPlaylist) =>
@@ -198,7 +198,6 @@ const User = (props: UserPropsInterface) => {
       {passwordChange && (
         <PasswordChangePopUp
           setClose={() => setPasswordChange(false)}
-          currentPassword={userParam.password}
           newPassword={''}
           confirmPassword={''}
         />

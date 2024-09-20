@@ -1,5 +1,5 @@
-import './globals-authorized.css';
 import SideHeader from '../Components/SideHeader/SideHeader';
+import './globals-authorized.css';
 
 interface AuthorisedLayoutProps {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ interface AuthorisedLayoutProps {
 
 const AuthorisedLayout: React.FC<AuthorisedLayoutProps> = ({ children }) => {
   return (
-    <div className='layout'>
+    <div className="layout">
       <SideHeader />
       {children}
     </div>

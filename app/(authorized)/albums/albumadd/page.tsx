@@ -1,57 +1,61 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import axios from 'axios';
+import { useForm } from 'react-hook-form';
 import styles from './page.module.scss';
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
+import BaseApi from '@/app/api/BaseApi';
+import { AlbumCreatePropsInterface } from './interfaces/album-create-props.interface';
 
 const AlbumAdd = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const coverImageInputRef = useRef<HTMLInputElement | null>(null);
-  const [albumName, setAlbumName] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AlbumCreatePropsInterface>();
+
+  const [selectedCoverImage, setSelectedCoverImage] =
+    useState<string>('/uplode.png');
+
+  const validateImageType = (file: File) => {
+    const allowedImageTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/jpg',
+    ];
+    return allowedImageTypes.includes(file.type);
+  };
 
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (e.target.files?.[0] && validateImageType(e.target.files[0])) {
+      setSelectedCoverImage(URL.createObjectURL(e.target.files[0]));
+    } else {
+      alert('Please upload a valid image file.');
     }
   };
 
-  const handleUploadClick = () => {
-    if (coverImageInputRef.current) {
-      coverImageInputRef.current.click();
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!albumName) {
-      alert('Album name is required');
-      return;
-    }
+  const onSubmit = async (values: AlbumCreatePropsInterface) => {
+    console.log(values);
 
     const formData = new FormData();
-    formData.append('albumName', albumName);
+    formData.append('albumName', values.name);
 
-    if (coverImageInputRef.current?.files?.[0]) {
-      formData.append('coverImage', coverImageInputRef.current.files[0]);
+    if (values.cover[0]) {
+      formData.append('coverImage', values.cover[0]);
     }
-    //TODO AXIOS --
-    axios
-      .post('', formData, {
+
+    try {
+      const response = await BaseApi.post('/album', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      })
-      .then((response) => {
-        console.log(response.data);
       });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -63,26 +67,36 @@ const AlbumAdd = () => {
         </div>
       </div>
       <div className={styles.wrapper}>
-        <form onSubmit={handleSubmit} className={styles.containerWrapper}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={styles.containerWrapper}
+        >
           <div className={styles.formContainer}>
             <div className={styles.form}>
               <div className={styles.inputsContainer}>
                 <div className={styles.coverContainer}>
                   <p>Upload Cover Image</p>
-                  <Image
-                    src={selectedImage || '/uplode.png'}
-                    alt="cover"
-                    width={496}
-                    height={220}
-                    onClick={handleUploadClick}
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <label htmlFor="coverImage">
+                    <Image
+                      src={selectedCoverImage}
+                      alt="Upload Cover"
+                      width={496}
+                      height={220}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </label>
                   <input
                     type="file"
-                    ref={coverImageInputRef}
-                    style={{ display: 'none' }}
+                    id="coverImage"
+                    {...register('cover', {
+                      required: 'Cover image is required',
+                    })}
                     onChange={handleCoverImageChange}
+                    style={{ display: 'none' }}
                   />
+                  {errors.cover?.message && (
+                    <span>{String(errors.cover.message)}</span>
+                  )}
                 </div>
               </div>
               <div className={styles.inputContainer}>
@@ -90,9 +104,13 @@ const AlbumAdd = () => {
                 <input
                   type="text"
                   placeholder="Enter album name"
-                  value={albumName}
-                  onChange={(e) => setAlbumName(e.target.value)}
+                  {...register('name', {
+                    required: 'Album name is required',
+                  })}
                 />
+                {errors.name?.message && (
+                  <span>{String(errors.name.message)}</span>
+                )}
               </div>
             </div>
           </div>

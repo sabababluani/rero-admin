@@ -1,32 +1,50 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Search from '@/app/Components/Search/Search';
 import styles from './page.module.scss';
-import { useState } from 'react';
 import AlbumRow from '@/app/Components/AlbumRow/AlbumRow';
-import { AlbumPropsInterface } from '../../albums/interfaces/albums-props-interface';
-import { albumDummyData } from '../../albums/albumdata/album-data';
+import BaseApi from '@/app/api/BaseApi'; // Make sure BaseApi is correctly set up for your backend
+import { AlbumPagePropsInterface } from '@/app/Components/AlbumRow/interfaces/album-row-props.interface';
 
-const Albums = () => {
-  const [artists, setArtists] = useState<AlbumPropsInterface[]>(albumDummyData);
-  const [filteredAlbums, setFilteredAlbums] =
-    useState<AlbumPropsInterface[]>(albumDummyData);
+const TopAlbums = () => {
+  const [albums, setAlbums] = useState<AlbumPagePropsInterface[]>([]);
+  const [filteredAlbums, setFilteredAlbums] = useState<AlbumPagePropsInterface[]>([]);
+
+  // Fetch the albums data from the backend
+  useEffect(() => {
+    BaseApi.get('/albums') // Adjust the endpoint to match your backend API
+      .then((response) => {
+        setAlbums(response.data);
+        setFilteredAlbums(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching albums:', error);
+      });
+  }, []);
 
   const handleDelete = (id: number) => {
-    setArtists((prevArtists) =>
-      prevArtists.filter((artist) => artist.id !== id),
-    );
-    setFilteredAlbums((prevFilteredAlbums) =>
-      prevFilteredAlbums.filter((albums) => albums.id !== id),
-    );
+    BaseApi.delete(`/albums/${id}`) // Adjust the endpoint to match your backend API
+      .then(() => {
+        setAlbums((prevAlbums) => prevAlbums.filter((album) => album.id !== id));
+        setFilteredAlbums((prevFilteredAlbums) =>
+          prevFilteredAlbums.filter((album) => album.id !== id)
+        );
+      })
+      .catch((error) => {
+        console.error('Error deleting album:', error);
+      });
   };
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    const results = albumDummyData.filter((album) =>
-      album.album.toLowerCase().includes(lowercasedValue),
-    );
-    setFilteredAlbums(results);
+    BaseApi.get(`/albums/search?query=${lowercasedValue}`) 
+      .then((response) => {
+        setFilteredAlbums(response.data);
+      })
+      .catch((error) => {
+        console.error('Error searching albums:', error);
+      });
   };
 
   return (
@@ -37,19 +55,19 @@ const Albums = () => {
           <Search
             placeholder="Search albums..."
             onSearch={handleSearch}
-            results={filteredAlbums.map((albums) => albums.artistName)}
+            results={filteredAlbums.map((album) => album.artist?.artistName || '')}
           />
         </div>
       </div>
       <div className={styles.containerWrapper}>
-        {filteredAlbums.map((albums) => (
+        {filteredAlbums.map((album) => (
           <AlbumRow
-            key={albums.id}
-            id={albums.id}
-            cover={albums.cover}
-            artistName={albums.artistName}
-            album={albums.album}
-            songCount={albums.songCount}
+            key={album.id}
+            id={album.id}
+            albumCover={album.musics[0]?.coverImage ?? '/placeholder.png'} 
+            artistName={album.artist?.artistName || 'Unknown Artist'}
+            name={album.name}
+            songCount={album.musics.length}
             onDelete={handleDelete}
           />
         ))}
@@ -58,4 +76,4 @@ const Albums = () => {
   );
 };
 
-export default Albums;
+export default TopAlbums;

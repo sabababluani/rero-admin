@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Rero',
@@ -13,9 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className='children'>
-        {children}
-        </div>
+        <div className="children">{children}</div>
       </body>
     </html>
   );
