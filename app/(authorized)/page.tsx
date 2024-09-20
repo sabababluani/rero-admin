@@ -20,7 +20,7 @@ const Home = () => {
   }, []);
 
   const handleDelete = (id: number) => {
-    BaseApi.delete(`/songs/${id}`).then(() => {
+    BaseApi.delete(`/music/${id}`).then(() => {
       setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
       setFilteredSongs((prevFilteredSongs) =>
         prevFilteredSongs.filter((song) => song.id !== id),
@@ -29,11 +29,16 @@ const Home = () => {
   };
 
   const handleSearch = (value: string) => {
+    if (value.trim() === '') {
+      setFilteredSongs(songs);
+      return;
+    }
     const lowercasedValue = value.toLowerCase();
     BaseApi.get(`/search?query=${lowercasedValue}`).then((response) => {
-      setFilteredSongs(response.data);
+      setFilteredSongs(response.data.musics);
     });
   };
+  console.log(filteredSongs);
 
   return (
     <div className={styles.wrapper}>
@@ -42,7 +47,7 @@ const Home = () => {
           <h1>All Songs</h1>
           <Search
             onSearch={handleSearch}
-            results={filteredSongs.map((song) => song.name)}
+            results={filteredSongs?.map?.((song) => song.name)}
           />
         </div>
         <div>
@@ -50,7 +55,7 @@ const Home = () => {
         </div>
       </div>
       <div className={styles.container}>
-        {filteredSongs.map((song) => (
+        {filteredSongs?.map?.((song) => (
           <MusicRow
             key={song.id}
             id={song.id}

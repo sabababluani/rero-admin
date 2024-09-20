@@ -13,7 +13,6 @@ export interface AlbumPropsInterface {
   releaseDate: string;
   albumCover: string;
   artistId: number;
-  deletedAt: string | null;
   musics: MusicPropsInterface[];
 }
 
@@ -42,5 +41,4 @@ export interface AlbumSummaryPropsInterface {
   releaseDate: string;
   albumCover: string;
   artistId: number;
-  deletedAt: string | null;
 }

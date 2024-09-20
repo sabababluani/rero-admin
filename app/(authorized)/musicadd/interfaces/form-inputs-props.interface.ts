@@ -7,6 +7,5 @@ export interface FormInputsPropsInterface {
   albumId: number;
   artistId: number;
   coverImage: any;
-  file: any;
   onSubmit: (data: FieldValues) => void;
 }

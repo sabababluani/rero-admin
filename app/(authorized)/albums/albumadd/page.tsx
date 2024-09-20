@@ -90,8 +90,8 @@ const AlbumAdd = () => {
                     id="coverImage"
                     {...register('cover', {
                       required: 'Cover image is required',
+                      onChange: handleCoverImageChange,
                     })}
-                    onChange={handleCoverImageChange}
                     style={{ display: 'none' }}
                   />
                   {errors.cover?.message && (

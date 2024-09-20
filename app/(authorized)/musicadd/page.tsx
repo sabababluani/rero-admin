@@ -39,8 +39,6 @@ const MusicAdd = () => {
   }, []);
 
   const onSubmit = (values: FormInputsPropsInterface) => {
-    console.log(values);
-
     const data = new FormData();
     data.append('name', values.name);
     data.append('albumId', values.albumId.toString());

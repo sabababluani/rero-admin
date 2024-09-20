@@ -31,11 +31,16 @@ const Albums = () => {
   };
 
   const handleSearch = (value: string) => {
+    if (value.trim() === '') {
+      setFilteredAlbums(albums);
+      return;
+    }
     const lowercasedValue = value.toLowerCase();
     BaseApi.get(`/search?query=${lowercasedValue}`).then((response) => {
-      setFilteredAlbums(response.data);
+      setFilteredAlbums(response.data.albums);
     });
   };
+console.log(filteredAlbums);
 
   return (
     <div className={styles.wrapper}>
@@ -45,13 +50,13 @@ const Albums = () => {
           <Search
             placeholder="Search albums..."
             onSearch={handleSearch}
-            results={filteredAlbums.map((album) => album.artist?.artistName)}
+            results={filteredAlbums?.map?.((album) => album.artist?.artistName)}
           />
         </div>
         <AddNewItem href="/albums/albumadd" />
       </div>
       <div className={styles.containerWrapper}>
-        {filteredAlbums.map((album) => (
+        {filteredAlbums?.map?.((album) => (
           <AlbumRow
             key={album.id}
             id={album.id}

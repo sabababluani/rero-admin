@@ -18,7 +18,7 @@ export interface AlbumPagePropsInterface {
     name: string;
     musicAudio: string;
     coverImage: string;
-    duration: string | null;
+    duration: string;
     albumId: number;
     artistId: number;
   }[];

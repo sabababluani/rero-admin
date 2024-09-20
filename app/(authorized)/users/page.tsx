@@ -80,10 +80,10 @@ const Users = () => {
       <h1>All Users</h1>
       <Search
         onSearch={handleSearch}
-        results={filteredUsers.map((user) => user.email)}
+        results={filteredUsers?.map?.((user) => user.email)}
       />
       <div className={styles.container}>
-        {filteredUsers.map((user) => (
+        {filteredUsers?.map?.((user) => (
           <UserRow
             key={user.id}
             id={user.id}
