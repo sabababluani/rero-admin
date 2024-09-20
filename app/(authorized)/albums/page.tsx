@@ -15,34 +15,26 @@ const Albums = () => {
   >([]);
 
   useEffect(() => {
-    BaseApi.get('/album')
-      .then((response) => {
-        setAlbums(response.data);
-        setFilteredAlbums(response.data);
-      })
-      .catch((error) => console.log(error));
+    BaseApi.get('/album').then((response) => {
+      setAlbums(response.data);
+      setFilteredAlbums(response.data);
+    });
   }, []);
 
   const handleDelete = (id: number) => {
-    BaseApi.delete(`/album/${id}`)
-      .then(() => {
-        setAlbums((prevAlbums) =>
-          prevAlbums.filter((album) => album.id !== id),
-        );
-        setFilteredAlbums((prevFilteredAlbums) =>
-          prevFilteredAlbums.filter((album) => album.id !== id),
-        );
-      })
-      .catch((error) => console.log(error));
+    BaseApi.delete(`/album/${id}`).then(() => {
+      setAlbums((prevAlbums) => prevAlbums.filter((album) => album.id !== id));
+      setFilteredAlbums((prevFilteredAlbums) =>
+        prevFilteredAlbums.filter((album) => album.id !== id),
+      );
+    });
   };
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    BaseApi.get(`/search?query=${lowercasedValue}`)
-      .then((response) => {
-        setFilteredAlbums(response.data);
-      })
-      .catch((error) => console.log(error));
+    BaseApi.get(`/search?query=${lowercasedValue}`).then((response) => {
+      setFilteredAlbums(response.data);
+    });
   };
 
   return (
@@ -63,7 +55,7 @@ const Albums = () => {
           <AlbumRow
             key={album.id}
             id={album.id}
-            albumCover={album.musics[0]?.coverImage ?? '/placeholder.png'}
+            albumCover={album.cover ?? '/placeholder.png'}
             artistName={album.artist?.artistName}
             songCount={album.musics.length}
             onDelete={handleDelete}

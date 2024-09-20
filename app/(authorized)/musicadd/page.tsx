@@ -39,6 +39,8 @@ const MusicAdd = () => {
   }, []);
 
   const onSubmit = (values: FormInputsPropsInterface) => {
+    console.log(values);
+
     const data = new FormData();
     data.append('name', values.name);
     data.append('albumId', values.albumId.toString());
@@ -65,7 +67,7 @@ const MusicAdd = () => {
 
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const validImageTypes = ['image/jpeg', 'image/png'];
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (file && validImageTypes.includes(file.type)) {
       setSelectedCoverImage(URL.createObjectURL(file));
     } else {
@@ -117,8 +119,8 @@ const MusicAdd = () => {
                   id="musicAudio"
                   {...register('musicAudio', {
                     required: 'Music file is required',
+                    onChange: handleMusicFileChange,
                   })}
-                  onChange={handleMusicFileChange}
                   className={styles.inputFile}
                   style={{ display: 'none' }}
                   accept=".mp3"
@@ -182,8 +184,8 @@ const MusicAdd = () => {
               id="coverImage"
               {...register('coverImage', {
                 required: 'Cover image is required',
+                onChange: handleCoverImageChange,
               })}
-              onChange={handleCoverImageChange}
               style={{ display: 'none' }}
               accept=".jpg,.jpeg,.png"
             />

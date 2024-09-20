@@ -3,10 +3,10 @@ import { FieldValues } from 'react-hook-form';
 export interface FormInputsPropsInterface {
   name: string;
   artistName: string;
-  musicAudio: string;
+  musicAudio: any;
   albumId: number;
   artistId: number;
-  coverImage: string;
+  coverImage: any;
   file: any;
   onSubmit: (data: FieldValues) => void;
 }

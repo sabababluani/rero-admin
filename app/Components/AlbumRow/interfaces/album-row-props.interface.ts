@@ -12,6 +12,7 @@ export interface AlbumPagePropsInterface {
   id: number;
   name: string;
   releaseDate: string;
+  cover: string;
   musics: {
     id: number;
     name: string;

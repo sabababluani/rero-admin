@@ -13,32 +13,26 @@ const Home = () => {
   const [filteredSongs, setFilteredSongs] = useState<MusicPropsInterface[]>([]);
 
   useEffect(() => {
-    BaseApi.get('/music')
-      .then((response) => {
-        setSongs(response.data);
-        setFilteredSongs(response.data);
-      })
-      .catch((error) => console.log(error));
+    BaseApi.get('/music').then((response) => {
+      setSongs(response.data);
+      setFilteredSongs(response.data);
+    });
   }, []);
 
   const handleDelete = (id: number) => {
-    BaseApi.delete(`/songs/${id}`)
-      .then(() => {
-        setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
-        setFilteredSongs((prevFilteredSongs) =>
-          prevFilteredSongs.filter((song) => song.id !== id),
-        );
-      })
-      .catch((error) => console.log(error));
+    BaseApi.delete(`/songs/${id}`).then(() => {
+      setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
+      setFilteredSongs((prevFilteredSongs) =>
+        prevFilteredSongs.filter((song) => song.id !== id),
+      );
+    });
   };
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
-    BaseApi.get(`/search?query=${lowercasedValue}`)
-      .then((response) => {
-        setFilteredSongs(response.data);
-      })
-      .catch((error) => console.log(error));
+    BaseApi.get(`/search?query=${lowercasedValue}`).then((response) => {
+      setFilteredSongs(response.data);
+    });
   };
 
   return (

@@ -170,14 +170,22 @@ const User = () => {
         <div className={styles.containerWrapper}>
           <p>{userParam.email}</p>
           <div className={styles.password}>
-            <p>{userParam.password}</p>
-            <Image
-              src="/Pen.png"
-              alt="pen"
-              width={24}
-              height={24}
-              onClick={() => setPasswordChange(true)}
-            />
+            <p>Change Password</p>
+            <div
+              className={
+                passwordChange
+                  ? styles.editActiveContainer
+                  : styles.editContainer
+              }
+            >
+              <Image
+                src="/Pen.png"
+                alt="pen"
+                width={24}
+                height={24}
+                onClick={() => setPasswordChange(true)}
+              />
+            </div>
           </div>
         </div>
         <div className={styles.playlistContainer}>

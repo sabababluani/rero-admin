@@ -64,3 +64,22 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
+
+.editContainer {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.editActiveContainer {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #13828a;
+  border-radius: 4px;
+}
