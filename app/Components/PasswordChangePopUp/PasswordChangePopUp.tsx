@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import styles from './PasswordChangePopUp.module.scss';
 import { PasswordChangePopUpPropsInterface } from './interfaces/password-change-pop-up-props.interface';
+import BaseApi from '@/app/api/BaseApi';
 
 const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
   const {
@@ -10,7 +11,13 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
   } = useForm<PasswordChangePopUpPropsInterface>();
 
   const onSubmit = (data: PasswordChangePopUpPropsInterface) => {
-    console.log('Password change ', data);
+    BaseApi.put(`/user/${props.id}/change-password`, data)
+      .then(() => {
+        alert('Password changed successfully');
+      })
+      .catch(() => {
+        alert('Could not change password');
+      });
   };
 
   return (

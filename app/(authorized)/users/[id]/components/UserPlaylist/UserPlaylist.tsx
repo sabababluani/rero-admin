@@ -15,7 +15,7 @@ const UserPlaylist = (props: UserPlaylistPropsInterface) => {
   return (
     <div className={styles.wrapper}>
       <p>{props.name}</p>
-      <p>{props.musics.length} Songs</p>
+      {/* <p>{props.musics.length} Songs</p> */}
       <div className={styles.delete} onClick={() => setPlaylistDelete(true)}>
         <Image src="/garbage.png" alt="delete" width={28} height={28} />
       </div>

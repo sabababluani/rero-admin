@@ -27,14 +27,11 @@ const UserRow = (props: UserRowPropsInterface) => {
         <p>{props.email}</p>
       </div>
       <div className={styles.imageContainer}>
-        <div className={styles.songCountContainer}>
-          <p>{props.songCount} Songs</p>
-        </div>
         <Link href={`/users/${props.id}`} className={styles.editLink}>
           <Image src="/edituser.png" alt="edit" width={28} height={28} />
         </Link>
         <div
-          className={props.isBlocked ? styles.highlightedBlock : styles.block}
+          className={props.banned ? styles.highlightedBlock : styles.block}
           onClick={() => setUserBlock(true)}
         >
           <Image src="/block.png" alt="block" width={28} height={28} />

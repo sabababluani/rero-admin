@@ -1,5 +1,6 @@
 'use client';
 
+import Cookies from 'js-cookie';
 import Image from 'next/image';
 import styles from './SideHeader.module.scss';
 import NavigationItem from '../NavigationItem/NavigationItem';
@@ -9,6 +10,10 @@ import Link from 'next/link';
 
 const SideHeader = () => {
   const pathname = usePathname();
+
+  const handleLogout = () => {
+    Cookies.remove('token');
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -24,6 +29,14 @@ const SideHeader = () => {
             isActive={pathname === item.link}
           />
         ))}
+      </div>
+      <div className={styles.containerWrapper}>
+        <NavigationItem
+          title={'Log Out'}
+          link={'/login'} 
+          isActive={false}
+          onClick={handleLogout}
+        />
       </div>
     </div>
   );

@@ -7,7 +7,8 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import BaseApi from '@/app/api/BaseApi';
 import { FormInputsPropsInterface } from './interfaces/form-inputs-props.interface';
-import { AlbumPagePropsInterface } from '@/app/Components/AlbumRow/interfaces/album-row-props.interface';
+import { ArtistPropsInterface } from './interfaces/artist-props.interface';
+import { RowMusicDataInterface } from './interfaces/row-music-props.interface';
 
 const MusicAdd = () => {
   const {
@@ -16,8 +17,12 @@ const MusicAdd = () => {
     formState: { errors },
   } = useForm<FormInputsPropsInterface>();
 
-  const [albums, setAlbums] = useState<AlbumPagePropsInterface[]>([]);
-  const [artists, setArtists] = useState<AlbumPagePropsInterface[]>([]);
+  const [albums, setAlbums] = useState<RowMusicDataInterface[]>([]);
+  const [artists, setArtists] = useState<ArtistPropsInterface[]>([]);
+  const [filteredAlbums, setFilteredAlbums] = useState<RowMusicDataInterface[]>(
+    [],
+  );
+  const [selectedArtistId, setSelectedArtistId] = useState<number | null>(null);
   const [selectedMusicFile, setSelectedMusicFile] = useState<string>('');
   const [selectedCoverImage, setSelectedCoverImage] =
     useState<string>('/uplode.png');
@@ -25,11 +30,13 @@ const MusicAdd = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const albumResponse = await BaseApi.get('/album');
-        setAlbums(albumResponse.data);
-
         const artistResponse = await BaseApi.get('/artist');
         setArtists(artistResponse.data);
+
+        const allAlbums = artistResponse.data.flatMap(
+          (artist: ArtistPropsInterface) => artist.albums,
+        );
+        setAlbums(allAlbums);
       } catch (error) {
         console.log(error);
       }
@@ -37,6 +44,17 @@ const MusicAdd = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (selectedArtistId !== null) {
+      const artistAlbums = albums.filter(
+        (album) => album.artistId === selectedArtistId,
+      );
+      setFilteredAlbums(artistAlbums);
+    } else {
+      setFilteredAlbums([]);
+    }
+  }, [selectedArtistId, albums]);
 
   const onSubmit = (values: FormInputsPropsInterface) => {
     const data = new FormData();
@@ -50,7 +68,13 @@ const MusicAdd = () => {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
+    })
+      .then(() => {
+        alert('Music added successfully!');
+      })
+      .catch(() => {
+        alert('Failed to add music.');
+      });
   };
 
   const handleMusicFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,6 +98,10 @@ const MusicAdd = () => {
     }
   };
 
+  const handleArtistChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedArtistId(+e.target.value);
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -86,9 +114,7 @@ const MusicAdd = () => {
             <div className={styles.inputContainer}>
               <p>Song Title</p>
               <input
-                {...register('name', {
-                  required: 'Song title is required',
-                })}
+                {...register('name', { required: 'Song title is required' })}
                 type="text"
                 placeholder="Enter song title"
               />
@@ -129,32 +155,14 @@ const MusicAdd = () => {
               )}
             </div>
             <div className={styles.inputContainer}>
-              <p>Select Album</p>
-              <select
-                {...register('albumId', {
-                  required: 'Album selection is required',
-                })}
-              >
-                <option>Select an album</option>
-                {albums.map((album) => (
-                  <option key={album.id} value={album.id}>
-                    {album.name}
-                  </option>
-                ))}
-              </select>
-              {errors.albumId?.message && (
-                <span>{String(errors.albumId.message)}</span>
-              )}
-            </div>
-
-            <div className={styles.inputContainer}>
               <p>Select Artist</p>
               <select
                 {...register('artistId', {
                   required: 'Artist selection is required',
+                  onChange: handleArtistChange,
                 })}
               >
-                <option>Select an artist</option>
+                <option value="">Select an artist</option>
                 {artists.map((artist) => (
                   <option key={artist.id} value={artist.id}>
                     {artist.artistName}
@@ -163,6 +171,26 @@ const MusicAdd = () => {
               </select>
               {errors.artistId?.message && (
                 <span>{String(errors.artistId.message)}</span>
+              )}
+            </div>
+
+            <div className={styles.inputContainer}>
+              <p>Select Album</p>
+              <select
+                {...register('albumId', {
+                  required: 'Album selection is required',
+                })}
+                disabled={!selectedArtistId}
+              >
+                <option value="">Select an album</option>
+                {filteredAlbums.map((album) => (
+                  <option key={album.id} value={album.id}>
+                    {album.name}
+                  </option>
+                ))}
+              </select>
+              {errors.albumId?.message && (
+                <span>{String(errors.albumId.message)}</span>
               )}
             </div>
           </div>

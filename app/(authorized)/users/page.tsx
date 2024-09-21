@@ -1,72 +1,73 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Search from '@/app/Components/Search/Search';
 import styles from './page.module.scss';
 import UserRow from '@/app/Components/UserRow/UserRow';
-import { useState } from 'react';
-
-const userData = [
-  {
-    id: 1,
-    email: 'user1@example.com',
-    playlistCount: 5,
-    songCount: 20,
-    isBlocked: false,
-  },
-  {
-    id: 2,
-    email: 'user2@example.com',
-    playlistCount: 2,
-    songCount: 12,
-    isBlocked: false,
-  },
-  {
-    id: 3,
-    email: 'user3@example.com',
-    playlistCount: 7,
-    songCount: 33,
-    isBlocked: false,
-  },
-  {
-    id: 4,
-    email: 'user4@example.com',
-    playlistCount: 1,
-    songCount: 8,
-    isBlocked: false,
-  },
-  {
-    id: 5,
-    email: 'user5@example.com',
-    playlistCount: 0,
-    songCount: 5,
-    isBlocked: false,
-  },
-];
+import { UserPropsInterface } from './interfaces/user-props.interface';
+import BaseApi from '@/app/api/BaseApi';
 
 const Users = () => {
-  const [users, setUsers] = useState(userData);
-  const [filteredUsers, setFilteredUsers] = useState(userData);
+  const [users, setUsers] = useState<UserPropsInterface[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserPropsInterface[]>([]);
 
-  const handleDelete = (id: number) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await BaseApi.get('/user');
+        setUsers(response.data);
+        setFilteredUsers(response.data);
+      } catch (error) {
+        alert('Could not get users');
+      }
+    };
 
-    setFilteredUsers((prevFilteredUsers) =>
-      prevFilteredUsers.filter((user) => user.id !== id),
-    );
+    fetchUsers();
+  }, []);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await BaseApi.delete(`/user/${id}`);
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      setFilteredUsers((prevFilteredUsers) =>
+        prevFilteredUsers.filter((user) => user.id !== id),
+      );
+    } catch (error) {
+      alert('Could not delete user');
+    }
   };
 
-  const handleBlock = (id: number) => {
+  const handleBlock = async (id: number) => {
+    const userIndex = users.findIndex((user) => user.id === id);
+    if (userIndex < 0) return;
+
+    const newBlockState = !users[userIndex].banned;
     setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
+      prevUsers.map((user, index) =>
+        index === userIndex ? { ...user, banned: newBlockState } : user,
+      ),
+    );
+    setFilteredUsers((prevFilteredUsers) =>
+      prevFilteredUsers.map((user, index) =>
+        index === userIndex ? { ...user, banned: newBlockState } : user,
       ),
     );
 
-    setFilteredUsers((prevFilteredUsers) =>
-      prevFilteredUsers.map((user) =>
-        user.id === id ? { ...user, isBlocked: !user.isBlocked } : user,
-      ),
-    );
+    try {
+      await BaseApi.post(`/user/${id}`, { banned: newBlockState });
+    } catch (error) {
+      console.error('Error blocking/unblocking user:', error);
+      setUsers((prevUsers) =>
+        prevUsers.map((user, index) =>
+          index === userIndex ? { ...user, banned: !newBlockState } : user,
+        ),
+      );
+      setFilteredUsers((prevFilteredUsers) =>
+        prevFilteredUsers.map((user, index) =>
+          index === userIndex ? { ...user, banned: !newBlockState } : user,
+        ),
+      );
+    }
   };
 
   const handleSearch = (value: string) => {
@@ -90,9 +91,7 @@ const Users = () => {
             key={user.id}
             id={user.id}
             email={user.email}
-            playlistCount={user.playlistCount}
-            songCount={user.songCount}
-            isBlocked={user.isBlocked}
+            banned={user.banned}
             onDelete={handleDelete}
             onBlock={handleBlock}
           />

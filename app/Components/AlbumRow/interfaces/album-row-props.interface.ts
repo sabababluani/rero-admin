@@ -29,3 +29,9 @@ export interface AlbumPagePropsInterface {
     biography: string;
   };
 }
+
+export interface Albums {
+  name: string;
+  id: number | null | undefined;
+  albums: AlbumPagePropsInterface[];
+}
