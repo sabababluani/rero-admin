@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Search from '@/app/Components/Search/Search';
 import styles from './page.module.scss';
 import UserRow from '@/app/Components/UserRow/UserRow';
-import { UserPropsInterface } from './interfaces/user-props.interface';
 import BaseApi from '@/app/api/BaseApi';
+import { UserPropsInterface } from './[id]/interfaces/playlist-props.interface';
 
 const Users = () => {
   const [users, setUsers] = useState<UserPropsInterface[]>([]);
@@ -36,6 +36,9 @@ const Users = () => {
       alert('Could not delete user');
     }
   };
+
+console.log(users);
+
 
   const handleBlock = async (id: number) => {
     const userIndex = users.findIndex((user) => user.id === id);

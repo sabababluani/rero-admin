@@ -7,40 +7,46 @@ import { useParams } from 'next/navigation';
 import UserPlaylist from './components/UserPlaylist/UserPlaylist';
 import PasswordChangePopUp from '@/app/Components/PasswordChangePopUp/PasswordChangePopUp';
 import BaseApi from '@/app/api/BaseApi';
-import { UserPropsInterface } from './interfaces/user-props.interface';
+import { UserPropsInterface } from './interfaces/playlist-props.interface';
 
 const User = () => {
-  const [data, setData] = useState<UserPropsInterface[]>([]);
-
-  useEffect(() => {
-    BaseApi.get('/user').then((response) => {
-      setData(response.data);
-    });
-  }, []);
-
   const { id } = useParams();
-  const userParam = data.find((user) => user.id === +id);
-
-  const [playlistDelete, setPlaylistDelete] = useState(
-    userParam?.playlists || [],
+  const [data, setData] = useState<UserPropsInterface | null>(null);
+  const [playlists, setPlaylists] = useState<UserPropsInterface['playlists']>(
+    [],
   );
-
   const [passwordChange, setPasswordChange] = useState(false);
 
-  if (!userParam) return;
+  useEffect(() => {
+    if (id) {
+      BaseApi.get(`/user/${id}`).then((response) => {
+        setData(response.data);
+        setPlaylists(response.data.playlists || []);
+      });
+    }
+  }, [id]);
+
+  if (!data) return null;
 
   const handleDelete = (playlistId: number) => {
-    setPlaylistDelete((prevPlaylist) =>
-      prevPlaylist.filter((playlist) => playlist.id !== playlistId),
-    );
+    BaseApi.delete(`/playlist/${playlistId}`)
+      .then(() => {
+        alert('Playlist successfully deleted');
+        setPlaylists((prevPlaylists) =>
+          prevPlaylists.filter((playlist) => playlist.id !== playlistId),
+        );
+      })
+      .catch(() => {
+        alert('Could not delete playlist');
+      });
   };
 
   return (
     <div className={styles.wrapper}>
-      <h1>{`All user > ${userParam.email}`}</h1>
+      <h1>{`All user > ${data.email}`}</h1>
       <div className={styles.container}>
         <div className={styles.containerWrapper}>
-          <p>{userParam.email}</p>
+          <p>{data.email}</p>
           <div className={styles.password}>
             <p>Change Password</p>
             <div
@@ -63,11 +69,11 @@ const User = () => {
         <div className={styles.playlistContainer}>
           <h2>User Playlists</h2>
           <div className={styles.mapContainer}>
-            {playlistDelete.map((playlist) => (
+            {playlists.map((playlist) => (
               <UserPlaylist
                 key={playlist.id}
                 id={playlist.id}
-                name={playlist.name}
+                name={playlist.playlistName}
                 onDelete={handleDelete}
               />
             ))}

@@ -11,6 +11,8 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
   } = useForm<PasswordChangePopUpPropsInterface>();
 
   const onSubmit = (data: PasswordChangePopUpPropsInterface) => {
+    if (data.confirmPassword !== data.newPassword) return null;
+
     BaseApi.put(`/user/${props.id}/change-password`, data)
       .then(() => {
         alert('Password changed successfully');
