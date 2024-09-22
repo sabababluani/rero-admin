@@ -37,9 +37,6 @@ const Users = () => {
     }
   };
 
-console.log(users);
-
-
   const handleBlock = async (id: number) => {
     const userIndex = users.findIndex((user) => user.id === id);
     if (userIndex < 0) return;

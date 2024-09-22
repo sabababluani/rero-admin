@@ -38,7 +38,7 @@ const MusicAdd = () => {
         );
         setAlbums(allAlbums);
       } catch (error) {
-        console.log(error);
+        alert('Could not fetch artists');
       }
     };
 

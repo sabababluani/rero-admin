@@ -13,7 +13,6 @@ const SelectPlaylistPopUp = (props: SelectPopupPropsInterface) => {
 
   const handleConfirmClick = () => {
     if (value) {
-      console.log(`value: ${value}`);
       props.setOpen(false);
     }
   };

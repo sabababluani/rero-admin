@@ -40,7 +40,6 @@ const Albums = () => {
       setFilteredAlbums(response.data.albums);
     });
   };
-console.log(filteredAlbums);
 
   return (
     <div className={styles.wrapper}>

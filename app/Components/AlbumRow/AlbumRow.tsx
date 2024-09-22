@@ -20,7 +20,7 @@ const AlbumRow = (props: AlbumPropsInterface) => {
       await BaseApi.delete(`/album/${props.id}`);
       props.onDelete(props.id);
     } catch (error) {
-      console.log(error);
+      alert('Could not delete album');
     }
   };
 

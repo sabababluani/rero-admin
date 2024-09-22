@@ -84,8 +84,6 @@ const User = () => {
         <PasswordChangePopUp
           setClose={() => setPasswordChange(false)}
           id={+id}
-          newPassword={''}
-          confirmPassword={''}
         />
       )}
     </div>

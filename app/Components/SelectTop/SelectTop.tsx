@@ -12,7 +12,6 @@ const SelectTop = (props: SelectTopPropsInterface) => {
 
   const handleConfirmClick = () => {
     if (value) {
-      console.log(`value: ${value}`);
       props.setActive(false);
     }
   };

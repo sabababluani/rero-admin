@@ -26,7 +26,7 @@ const AlbumAdd = () => {
         const artistResponse = await BaseApi.get('/artist');
         setArtists(artistResponse.data);
       } catch (error) {
-        console.log(error);
+        alert('Could not fetch');
       }
     };
 
@@ -66,9 +66,8 @@ const AlbumAdd = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response.data);
     } catch (error) {
-      console.log(error);
+      alert('Could not post');
     }
   };
 

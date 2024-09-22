@@ -11,9 +11,13 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
   } = useForm<PasswordChangePopUpPropsInterface>();
 
   const onSubmit = (data: PasswordChangePopUpPropsInterface) => {
-    if (data.confirmPassword !== data.newPassword) return null;
+    if (data.confirmPassword !== data.password) return null;
+    const payload = {
+      password: data.password,
+    };
 
-    BaseApi.put(`/user/${props.id}/change-password`, data)
+
+    BaseApi.put(`/user/${props.id}/change-password`, payload)
       .then(() => {
         alert('Password changed successfully');
       })
@@ -31,15 +35,15 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
             <p>New Password</p>
             <input
               type="password"
-              {...register('newPassword', {
+              {...register('password', {
                 required: 'New password is required',
                 minLength: {
-                  value: 6,
-                  message: 'Password must be at least 6 characters',
+                  value: 8,
+                  message: 'Password must be at least 8 characters',
                 },
               })}
             />
-            {errors.newPassword && <span>{errors.newPassword.message}</span>}
+            {errors.password && <span>{errors.password.message}</span>}
           </div>
           <div className={styles.inputContainer}>
             <p>Confirm New Password</p>
@@ -47,8 +51,8 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
               type="password"
               {...register('confirmPassword', {
                 required: 'Please confirm your new password',
-                validate: (value, { newPassword }) =>
-                  value === newPassword || 'Passwords do not match',
+                validate: (value, { password }) =>
+                  value === password || 'Passwords do not match',
               })}
             />
             {errors.confirmPassword && (
