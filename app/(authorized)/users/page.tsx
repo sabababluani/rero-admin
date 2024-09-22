@@ -37,37 +37,32 @@ const Users = () => {
     }
   };
 
-  const handleBlock = async (id: number) => {
+  const handleBlock = (id: number) => {
     const userIndex = users.findIndex((user) => user.id === id);
     if (userIndex < 0) return;
 
-    const newBlockState = !users[userIndex].banned;
-    setUsers((prevUsers) =>
-      prevUsers.map((user, index) =>
-        index === userIndex ? { ...user, banned: newBlockState } : user,
-      ),
-    );
-    setFilteredUsers((prevFilteredUsers) =>
-      prevFilteredUsers.map((user, index) =>
-        index === userIndex ? { ...user, banned: newBlockState } : user,
-      ),
-    );
+    const isCurrentlyBanned = users[userIndex].banned;
+    const newBlockState = !isCurrentlyBanned;
+    const apiEndpoint = newBlockState ? `/user/ban/${id}` : `/user/unban/${id}`;
 
-    try {
-      await BaseApi.post(`/user/${id}`, { banned: newBlockState });
-    } catch (error) {
-      console.error('Error blocking/unblocking user:', error);
-      setUsers((prevUsers) =>
-        prevUsers.map((user, index) =>
-          index === userIndex ? { ...user, banned: !newBlockState } : user,
-        ),
-      );
-      setFilteredUsers((prevFilteredUsers) =>
-        prevFilteredUsers.map((user, index) =>
-          index === userIndex ? { ...user, banned: !newBlockState } : user,
-        ),
-      );
-    }
+    BaseApi.put(apiEndpoint)
+      .then(() => {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === id ? { ...user, banned: newBlockState } : user,
+          ),
+        );
+        setFilteredUsers((prevFilteredUsers) =>
+          prevFilteredUsers.map((user) =>
+            user.id === id ? { ...user, banned: newBlockState } : user,
+          ),
+        );
+      })
+      .catch((error) => {
+        alert(
+          `Could not ${newBlockState ? 'banning' : 'unbanning'} user`,
+        );
+      });
   };
 
   const handleSearch = (value: string) => {

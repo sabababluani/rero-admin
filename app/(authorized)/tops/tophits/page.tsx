@@ -1,14 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './page.module.scss';
-import { songData } from '@/app/utils/SongData';
 import Search from '@/app/Components/Search/Search';
 import MusicRow from '@/app/Components/MusicRow/MusicRow';
+import BaseApi from '@/app/api/BaseApi';
+import { MusicPropsInterface } from '../../artists/interface/artist-page-props.interface';
 
 const TopHits = () => {
-  const [songs, setSongs] = useState(songData);
-  const [filteredSongs, setFilteredSongs] = useState(songData);
+  const [songs, setSongs] = useState<MusicPropsInterface[]>([]);
+  const [filteredSongs, setFilteredSongs] = useState<MusicPropsInterface[]>([]);
+
+  useEffect(() => {
+    BaseApi.get('/music')
+      .then((response) => {
+        setSongs(response.data);
+        setFilteredSongs(response.data);
+      })
+      .catch(() => {
+        alert('Could not fetch data');
+      });
+  }, []);
 
   const handleDelete = (id: number) => {
     setSongs((prevSongs) => prevSongs.filter((song) => song.id !== id));
@@ -19,8 +31,8 @@ const TopHits = () => {
     const lowercasedValue = value.toLowerCase();
     const results = songs.filter(
       (song) =>
-        song.music.toLowerCase().includes(lowercasedValue) ||
-        song.artistName.toLowerCase().includes(lowercasedValue),
+        song.name.toLowerCase().includes(lowercasedValue) ||
+        song.artist.artistName.toLowerCase().includes(lowercasedValue),
     );
     setFilteredSongs(results);
   };
@@ -32,7 +44,7 @@ const TopHits = () => {
           <h1>Top Charts</h1>
           <Search
             onSearch={handleSearch}
-            results={filteredSongs.map((song) => song.music)}
+            results={filteredSongs.map((song) => song.name)}
           />
         </div>
       </div>
@@ -41,10 +53,10 @@ const TopHits = () => {
           <MusicRow
             key={song.id}
             id={song.id}
-            cover={song.cover}
-            music={song.music}
-            album={song.album}
-            artistName={song.artistName}
+            cover={song.coverImage}
+            music={song.name}
+            album={song.album?.name}
+            artistName={song.artist.artistName}
             duration={song.duration}
             onDelete={handleDelete}
           />
