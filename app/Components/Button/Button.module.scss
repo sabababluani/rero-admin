@@ -1,0 +1,25 @@
+.container {
+  width: 100%;
+  padding: 15px 0;
+  background-color: #13828a;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+}
+.confrim {
+  padding: 4px 0 ;
+}
+.container:hover {
+  background-color: #28a9b3;
+}
+
+.container:active {
+  background-color: #1dc2ce;
+}
+
+.container:disabled {
+  background-color: #8a9793;
+  cursor: not-allowed;
+}

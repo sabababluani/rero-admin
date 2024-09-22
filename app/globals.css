@@ -1,6 +1,7 @@
 html,
 body {
   overflow-x: hidden;
+  background-color: #121212;
 }
 
 * {
@@ -9,6 +10,4 @@ body {
   margin: 0;
 }
 
-a {
-  text-decoration: none;
-}
+

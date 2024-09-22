@@ -1,0 +1,34 @@
+.searchContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.searchContainer h1 {
+  font-size: 38px;
+  color: #fff;
+}
+
+.wrapper {
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.wrapper {
+  padding-top: 48px;
+  padding-left: 24px;
+}
+
+.containerWrapper {
+  padding-top: 24px;
+  padding-right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

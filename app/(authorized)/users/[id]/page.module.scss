@@ -1,0 +1,85 @@
+.wrapper h1 {
+  color: #fff;
+}
+
+.container {
+  padding-top: 12px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 48px 24px;
+  width: 100%;
+}
+
+.container p {
+  color: #fff;
+  font-size: 20px;
+}
+
+.password {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconsContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.playlistContainer {
+  padding-top: 48px;
+}
+
+.playlistContainer h2 {
+  color: #fff;
+  padding-bottom: 12px;
+}
+
+.delete {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete:hover {
+  background-color: #ff4343;
+}
+
+.containerWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.mapContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.editContainer {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.editActiveContainer {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #13828a;
+  border-radius: 4px;
+}
