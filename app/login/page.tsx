@@ -30,7 +30,7 @@ const Login = () => {
       localStorage.setItem('password', data.password);
     }
 
-    BaseApi.post('/auth/login', data)
+    BaseApi.post('/auth/login/admin', data)
       .then((response) => {
         setCookie('token', response.data.accessToken, 60);
         router.push('/');
