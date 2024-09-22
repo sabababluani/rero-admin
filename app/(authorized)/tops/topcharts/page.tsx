@@ -18,7 +18,7 @@ const TopCharts = () => {
         setSongs(response.data);
         setFilteredSongs(response.data);
       } catch (error) {
-        console.error('Error fetching songs:', error);
+        alert('Could not fetch top charts');
       }
     };
 
