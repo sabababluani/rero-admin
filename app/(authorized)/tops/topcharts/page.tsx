@@ -7,10 +7,6 @@ import MusicRow from '@/app/Components/MusicRow/MusicRow';
 import BaseApi from '@/app/api/BaseApi';
 import { MusicPropsInterface } from '../../artists/interface/artist-page-props.interface';
 
-export const getChartsLength = (songs: MusicPropsInterface[]) => {
-  return songs.length;
-};
-
 const TopCharts = () => {
   const [songs, setSongs] = useState<MusicPropsInterface[]>([]);
   const [filteredSongs, setFilteredSongs] = useState<MusicPropsInterface[]>([]);
@@ -21,8 +17,8 @@ const TopCharts = () => {
         const response = await BaseApi.get('/listeners');
         setSongs(response.data);
         setFilteredSongs(response.data);
-      } catch (error) {
-        console.error('Error fetching songs:', error);
+      } catch {
+        alert('Could not fetch data');
       }
     };
 
@@ -55,7 +51,7 @@ const TopCharts = () => {
       console.error('Error searching songs:', error);
     }
   };
-  
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.headerContainer}>
