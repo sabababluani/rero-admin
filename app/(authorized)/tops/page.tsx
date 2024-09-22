@@ -7,10 +7,15 @@ import styles from './page.module.scss';
 
 const Tops = () => {
   const [topChartsCount, setTopChartsCount] = useState(0);
+  const [topHitsCount, setTopHitsCount] = useState(0);
 
   useEffect(() => {
     BaseApi.get('/listeners').then((response) => {
       setTopChartsCount(response.data.length);
+    });
+
+    BaseApi.get('/music').then((response) => {
+      setTopHitsCount(response.data.length);
     });
   }, []);
 
@@ -20,7 +25,7 @@ const Tops = () => {
       <div className={styles.container}>
         <TopPageRow
           page={'Top Hits'}
-          count={topChartsCount}
+          count={topHitsCount}
           pageCount={'Hits'}
           link="/tops/tophits"
         />
@@ -29,18 +34,6 @@ const Tops = () => {
           count={topChartsCount}
           pageCount={'Charts'}
           link="/tops/topcharts"
-        />
-        <TopPageRow
-          page={'Top Albums'}
-          count={topChartsCount}
-          pageCount={'Albums'}
-          link="/tops/topalbums"
-        />
-        <TopPageRow
-          page={'Top Artists'}
-          count={topChartsCount}
-          pageCount={'Artists'}
-          link="/tops/topartists"
         />
       </div>
     </div>
