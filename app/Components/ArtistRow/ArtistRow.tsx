@@ -3,11 +3,9 @@ import styles from './ArtistRow.module.scss';
 import { ArtistRowPropsInterface } from './interfaces/artist-row-props.interface';
 import { useState } from 'react';
 import SurePopup from '../SurePopUp/SurePopUp';
-import SelectTop from '../SelectTop/SelectTop';
 
 const ArtistRow = (props: ArtistRowPropsInterface) => {
   const [musicDelete, setMusicDelete] = useState(false);
-  const [starActive, setStarActive] = useState(false);
 
   const onHandleDelete = () => {
     setMusicDelete(true);
@@ -16,10 +14,6 @@ const ArtistRow = (props: ArtistRowPropsInterface) => {
   const onHandleDeleteConfirm = () => {
     setMusicDelete(false);
     props.onDelete(props.id);
-  };
-
-  const onClickStar = () => {
-    setStarActive(true);
   };
 
   return (
@@ -36,24 +30,11 @@ const ArtistRow = (props: ArtistRowPropsInterface) => {
           <div
             className={styles.songs}
           >{`${props.songCount} ${props.songCount > 0 ? 'Songs' : 'Song'}`}</div>
-          <div className={styles.star}>
-            <Image
-            
-              src={starActive ? '/fullstar.png' : '/star.png'}
-              alt="star"
-              width={22}
-              height={22}
-              onClick={onClickStar}
-            />
-          </div>
           <div className={styles.garbageSpan} onClick={onHandleDelete}>
-            <Image src={'/garbage.png'} alt="trash" width={22} height={22} />
+            <Image src={'/garbage.png'} alt="trash" width={24} height={24} />
           </div>
         </div>
       </div>
-      {starActive && (
-        <SelectTop active={starActive} setActive={setStarActive} />
-      )}
       {musicDelete && (
         <SurePopup
           onCancel={() => setMusicDelete(false)}

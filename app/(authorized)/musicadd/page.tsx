@@ -19,13 +19,11 @@ const MusicAdd = () => {
 
   const [albums, setAlbums] = useState<RowMusicDataInterface[]>([]);
   const [artists, setArtists] = useState<ArtistPropsInterface[]>([]);
-  const [filteredAlbums, setFilteredAlbums] = useState<RowMusicDataInterface[]>(
-    [],
-  );
+  const [filteredAlbums, setFilteredAlbums] = useState<RowMusicDataInterface[]>([]);
   const [selectedArtistId, setSelectedArtistId] = useState<number | null>(null);
   const [selectedMusicFile, setSelectedMusicFile] = useState<string>('');
-  const [selectedCoverImage, setSelectedCoverImage] =
-    useState<string>('/uplode.png');
+  const [selectedCoverImage, setSelectedCoverImage] = useState<string>('/uplode.png');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Hits'); // State for category selection
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +62,9 @@ const MusicAdd = () => {
     data.append('musicAudio', values.musicAudio[0]);
     data.append('coverImage', values.coverImage[0]);
 
-    BaseApi.post('/music', data, {
+    const endpoint = selectedCategory === 'Charts' ? '/chart' : '/music';
+
+    BaseApi.post(endpoint, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -102,6 +102,10 @@ const MusicAdd = () => {
     setSelectedArtistId(+e.target.value);
   };
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -118,9 +122,7 @@ const MusicAdd = () => {
                 type="text"
                 placeholder="Enter song title"
               />
-              {errors.name?.message && (
-                <span>{String(errors.name.message)}</span>
-              )}
+              {errors.name?.message && <span>{String(errors.name.message)}</span>}
             </div>
             <div className={styles.inputContainer}>
               <p>Upload Music</p>
@@ -150,9 +152,7 @@ const MusicAdd = () => {
                   accept=".mp3"
                 />
               </div>
-              {errors.musicAudio?.message && (
-                <span>{String(errors.musicAudio.message)}</span>
-              )}
+              {errors.musicAudio?.message && <span>{String(errors.musicAudio.message)}</span>}
             </div>
             <div className={styles.inputContainer}>
               <p>Select Artist</p>
@@ -169,9 +169,7 @@ const MusicAdd = () => {
                   </option>
                 ))}
               </select>
-              {errors.artistId?.message && (
-                <span>{String(errors.artistId.message)}</span>
-              )}
+              {errors.artistId?.message && <span>{String(errors.artistId.message)}</span>}
             </div>
 
             <div className={styles.inputContainer}>
@@ -189,9 +187,19 @@ const MusicAdd = () => {
                   </option>
                 ))}
               </select>
-              {errors.albumId?.message && (
-                <span>{String(errors.albumId.message)}</span>
-              )}
+              {errors.albumId?.message && <span>{String(errors.albumId.message)}</span>}
+            </div>
+            
+            {/* Add category selection */}
+            <div className={styles.inputContainer}>
+              <p>Select Category</p>
+              <select
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+              >
+                <option value="Charts">Charts</option>
+                <option value="Hits">Hits</option>
+              </select>
             </div>
           </div>
           <div className={styles.coverContainer}>
