@@ -35,8 +35,8 @@ const Login = () => {
         setCookie('token', response.data.accessToken, 60);
         router.push('/');
       })
-      .catch((error) => {
-        alert(error.response.data.message);
+      .catch(() => {
+        alert('Could not log In');
       });
   };
 
