@@ -5,14 +5,16 @@ import Image from 'next/image';
 import styles from './SideHeader.module.scss';
 import NavigationItem from '../NavigationItem/NavigationItem';
 import { navigationData } from './utils/NavigationData';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const SideHeader = () => {
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = () => {
     Cookies.remove('token');
+    router.push('/login')
   };
 
   return (
@@ -33,7 +35,7 @@ const SideHeader = () => {
       <div className={styles.containerWrapper}>
         <NavigationItem
           title={'Log Out'}
-          link={'/login'} 
+          link={'/login'}
           isActive={false}
           onClick={handleLogout}
         />
