@@ -25,6 +25,7 @@ const AlbumAdd = () => {
       try {
         const artistResponse = await BaseApi.get('/artist');
         setArtists(artistResponse.data);
+        alert('Album added successfully!');
       } catch (error) {
         alert('Could not fetch');
       }

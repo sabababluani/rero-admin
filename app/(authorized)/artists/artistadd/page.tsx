@@ -45,6 +45,7 @@ const ArtistAdd = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      alert('Artist added successfully!');
     } catch (error) {
       alert('Could not add artist.');
     }
