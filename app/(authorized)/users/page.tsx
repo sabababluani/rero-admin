@@ -6,11 +6,13 @@ import styles from './page.module.scss';
 import UserRow from '@/app/Components/UserRow/UserRow';
 import BaseApi from '@/app/api/BaseApi';
 import { UserPropsInterface } from './[id]/interfaces/playlist-props.interface';
+import { useRouter } from 'next/navigation';
 
 const Users = () => {
   const [users, setUsers] = useState<UserPropsInterface[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserPropsInterface[]>([]);
 
+  const router = useRouter();
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -37,7 +39,7 @@ const Users = () => {
     }
   };
 
-  const handleBlock = (id: number) => {
+  const handleBlock = async (id: number) => {
     const userIndex = users.findIndex((user) => user.id === id);
     if (userIndex < 0) return;
 
@@ -45,24 +47,27 @@ const Users = () => {
     const newBlockState = !isCurrentlyBanned;
     const apiEndpoint = newBlockState ? `/user/ban/${id}` : `/user/unban/${id}`;
 
-    BaseApi.put(apiEndpoint)
-      .then(() => {
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.id === id ? { ...user, banned: newBlockState } : user,
-          ),
-        );
-        setFilteredUsers((prevFilteredUsers) =>
-          prevFilteredUsers.map((user) =>
-            user.id === id ? { ...user, banned: newBlockState } : user,
-          ),
-        );
-      })
-      .catch((error) => {
-        alert(
-          `Could not ${newBlockState ? 'banning' : 'unbanning'} user`,
-        );
-      });
+    try {
+      const response = await BaseApi.put(apiEndpoint);
+
+      if (response.status === 401) {
+        router.push('/login');
+        return;
+      }
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === id ? { ...user, banned: newBlockState } : user,
+        ),
+      );
+      setFilteredUsers((prevFilteredUsers) =>
+        prevFilteredUsers.map((user) =>
+          user.id === id ? { ...user, banned: newBlockState } : user,
+        ),
+      );
+    } catch (error) {
+      alert(`Could not ${newBlockState ? 'ban' : 'unban'} user`);
+    }
   };
 
   const handleSearch = (value: string) => {
