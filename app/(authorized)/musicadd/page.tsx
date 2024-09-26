@@ -15,6 +15,7 @@ const MusicAdd = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset, // Import reset from useForm
   } = useForm<FormInputsPropsInterface>();
 
   const [albums, setAlbums] = useState<RowMusicDataInterface[]>([]);
@@ -56,7 +57,7 @@ const MusicAdd = () => {
     }
   }, [selectedArtistId, albums]);
 
-  const onSubmit = (values: FormInputsPropsInterface) => {
+  const onSubmit = async (values: FormInputsPropsInterface) => {
     const data = new FormData();
     data.append('name', values.name);
     data.append('albumId', values.albumId.toString());
@@ -64,17 +65,20 @@ const MusicAdd = () => {
     data.append('musicAudio', values.musicAudio[0]);
     data.append('coverImage', values.coverImage[0]);
 
-    BaseApi.post('/music', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-      .then(() => {
-        alert('Music added successfully!');
-      })
-      .catch(() => {
-        alert('Failed to add music.');
+    reset();
+    setSelectedArtistId(null);
+    setSelectedMusicFile('');
+    setSelectedCoverImage('/uplode.png');
+    try {
+      await BaseApi.post('/music', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
+      alert('Music added successfully!');
+    } catch {
+      alert('Failed to add music.');
+    }
   };
 
   const handleMusicFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
