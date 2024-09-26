@@ -7,15 +7,26 @@ import BaseApi from '@/app/api/BaseApi';
 import styles from './page.module.scss';
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
 import { ArtistCreatePropsInterface } from './interfaces/artist-create-props.interface';
+import { ArtistPropsInterface } from '../../musicadd/interfaces/artist-props.interface';
+import { RowMusicDataInterface } from '../../musicadd/interfaces/row-music-props.interface';
 
 const ArtistAdd = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ArtistCreatePropsInterface>();
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [albums, setAlbums] = useState<RowMusicDataInterface[]>([]);
+  const [artists, setArtists] = useState<ArtistPropsInterface[]>([]);
+  const [filteredAlbums, setFilteredAlbums] = useState<RowMusicDataInterface[]>(
+    [],
+  );
+  const [selectedArtistId, setSelectedArtistId] = useState<number | null>(null);
+  const [selectedMusicFile, setSelectedMusicFile] = useState<string>('');
+  const [selectedCoverImage, setSelectedCoverImage] =
+    useState<string>('/uplode.png');
 
   const validateImageType = (file: File) => {
     const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -24,7 +35,7 @@ const ArtistAdd = () => {
 
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0] && validateImageType(e.target.files[0])) {
-      setSelectedImage(URL.createObjectURL(e.target.files[0]));
+      setSelectedCoverImage(URL.createObjectURL(e.target.files[0]));
     } else {
       alert('Please upload a valid image file (jpeg, png, or gif).');
     }
@@ -38,6 +49,11 @@ const ArtistAdd = () => {
     if (values.artistPhoto[0]) {
       formData.append('artistPhoto', values.artistPhoto[0]);
     }
+    
+    reset();
+    setSelectedMusicFile('');
+    setSelectedCoverImage('/uplode.png');
+    setSelectedArtistId(null);
 
     try {
       const response = await BaseApi.post('/artist', formData, {
@@ -96,7 +112,7 @@ const ArtistAdd = () => {
               <p>Upload Cover Image</p>
               <label htmlFor="coverImage">
                 <Image
-                  src={selectedImage || '/uplode.png'}
+                  src={selectedCoverImage || '/uplode.png'}
                   alt="Upload Cover"
                   width={496}
                   height={220}

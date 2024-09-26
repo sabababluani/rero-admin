@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import styles from './page.module.scss';
@@ -13,6 +13,7 @@ const AlbumAdd = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AlbumCreatePropsInterface>();
 
@@ -25,9 +26,8 @@ const AlbumAdd = () => {
       try {
         const artistResponse = await BaseApi.get('/artist');
         setArtists(artistResponse.data);
-        alert('Album added successfully!');
       } catch (error) {
-        alert('Could not fetch');
+        alert('Could not fetch artists');
       }
     };
 
@@ -60,15 +60,17 @@ const AlbumAdd = () => {
     if (values.cover[0]) {
       formData.append('cover', values.cover[0]);
     }
-
+    reset();
     try {
-      const response = await BaseApi.post('/album', formData, {
+      await BaseApi.post('/album', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      setSelectedCoverImage('/uplode.png');
+      alert('Added Succesfully');
     } catch (error) {
-      alert('Could not post');
+      alert('Could not post album. Please try again.');
     }
   };
 
@@ -134,7 +136,7 @@ const AlbumAdd = () => {
                   required: 'Artist selection is required',
                 })}
               >
-                <option>Select an artist</option>
+                <option value="">Select an artist</option>
                 {artists.map((artist) => (
                   <option key={artist.id} value={artist.id}>
                     {artist.artistName}
