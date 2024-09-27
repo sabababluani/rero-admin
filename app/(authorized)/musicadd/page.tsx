@@ -15,7 +15,7 @@ const MusicAdd = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset, // Import reset from useForm
+    reset,
   } = useForm<FormInputsPropsInterface>();
 
   const [albums, setAlbums] = useState<RowMusicDataInterface[]>([]);
@@ -219,6 +219,7 @@ const MusicAdd = () => {
               style={{ display: 'none' }}
               accept=".jpg,.jpeg,.png"
             />
+            <span>Music Cover is required</span>
           </div>
         </div>
         <div className={styles.buttonContainer}>

@@ -7,8 +7,6 @@ import BaseApi from '@/app/api/BaseApi';
 import styles from './page.module.scss';
 import AddNewItem from '@/app/Components/AddNewItem/AddNewItem';
 import { ArtistCreatePropsInterface } from './interfaces/artist-create-props.interface';
-import { ArtistPropsInterface } from '../../musicadd/interfaces/artist-props.interface';
-import { RowMusicDataInterface } from '../../musicadd/interfaces/row-music-props.interface';
 
 const ArtistAdd = () => {
   const {
@@ -18,13 +16,8 @@ const ArtistAdd = () => {
     formState: { errors },
   } = useForm<ArtistCreatePropsInterface>();
 
-  const [albums, setAlbums] = useState<RowMusicDataInterface[]>([]);
-  const [artists, setArtists] = useState<ArtistPropsInterface[]>([]);
-  const [filteredAlbums, setFilteredAlbums] = useState<RowMusicDataInterface[]>(
-    [],
-  );
-  const [selectedArtistId, setSelectedArtistId] = useState<number | null>(null);
-  const [selectedMusicFile, setSelectedMusicFile] = useState<string>('');
+  const [, setSelectedArtistId] = useState<number | null>(null);
+  const [, setSelectedMusicFile] = useState<string>('');
   const [selectedCoverImage, setSelectedCoverImage] =
     useState<string>('/uplode.png');
 
@@ -49,7 +42,7 @@ const ArtistAdd = () => {
     if (values.artistPhoto[0]) {
       formData.append('artistPhoto', values.artistPhoto[0]);
     }
-    
+
     reset();
     setSelectedMusicFile('');
     setSelectedCoverImage('/uplode.png');

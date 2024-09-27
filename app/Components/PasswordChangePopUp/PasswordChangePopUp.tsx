@@ -8,6 +8,7 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<PasswordChangePopUpPropsInterface>();
 
   const onSubmit = (data: PasswordChangePopUpPropsInterface) => {
@@ -15,10 +16,11 @@ const PasswordChangePopUp = (props: PasswordChangePopUpPropsInterface) => {
     const payload = {
       password: data.password,
     };
-
-
+    reset();
+    props.setClose(false);
     BaseApi.put(`/user/${props.id}/change-password`, payload)
       .then(() => {
+
         alert('Password changed successfully');
       })
       .catch(() => {

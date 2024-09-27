@@ -60,14 +60,15 @@ const AlbumAdd = () => {
     if (values.cover[0]) {
       formData.append('cover', values.cover[0]);
     }
+
     reset();
+    setSelectedCoverImage('/uplode.png');
     try {
       await BaseApi.post('/album', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setSelectedCoverImage('/uplode.png');
       alert('Added Succesfully');
     } catch (error) {
       alert('Could not post album. Please try again.');
