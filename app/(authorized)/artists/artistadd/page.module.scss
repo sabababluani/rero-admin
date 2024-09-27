@@ -33,9 +33,27 @@
   outline: none;
 }
 
+.coverContainer span {
+  color: red;
+}
+
+.textareaContainer span {
+  color: red;
+}
+
+.coverContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .inputsContainer {
   flex: 1;
 }
+
+.inputContainer span {
+  color: red;
+}
+
 .coverContainer p {
   color: #fff;
   padding-bottom: 8px;

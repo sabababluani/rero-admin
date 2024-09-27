@@ -8,6 +8,10 @@
   height: 230px;
 }
 
+.coverContainer span {
+  color: red;
+}
+
 .inputContainer input {
   width: 100%;
   height: 48px;
@@ -15,6 +19,10 @@
   padding-left: 12px;
   margin-bottom: 4px;
   outline: none;
+}
+
+.inputContainer span {
+  color: red;
 }
 
 .inputContainer p {
