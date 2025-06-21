@@ -8,7 +8,6 @@ A modern, scalable admin dashboard for managing the Rero platform. Built with **
 - 📄 Content and user management
 - 📊 Dashboard with real-time analytics
 - 🧩 Modular and reusable component structure
-- 🌐 Multi-language support (i18n-ready)
 - 🎨 Built with pixel-perfect design implementation using Ant Design
 
 ## 🧱 Tech Stack
