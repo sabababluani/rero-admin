@@ -23,7 +23,7 @@ A modern, scalable admin dashboard for managing the Rero platform. Built with **
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/your-org/rero-admin.git
+git clone https://github.com/sabababluani/rero-admin.git
 cd rero-admin
 npm install
 npm run dev
