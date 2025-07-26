@@ -1,16 +1,16 @@
-# 🛠️ Rero Admin Panel (`rero-front`)
+# Rero Admin Panel (`rero-front`)
 
 A modern, scalable admin dashboard for managing the Rero platform. Built with **React**, **TypeScript**, and **Ant Design**, it provides a clean UI and a powerful interface for administrators and content managers.
 
-## 🚀 Features
+## Features
 
-- 🔐 Role-based authentication and access control
-- 📄 Content and user management
-- 📊 Dashboard with real-time analytics
-- 🧩 Modular and reusable component structure
-- 🎨 Built with pixel-perfect design implementation using Ant Design
+- Role-based authentication and access control
+- Content and user management
+- Dashboard with real-time analytics
+- Modular and reusable component structure
+- Built with pixel-perfect design implementation using Ant Design
 
-## 🧱 Tech Stack
+## Tech Stack
 
 - **Frontend:** Next.js, TypeScript
 - **UI Framework:** Ant Design
@@ -19,7 +19,7 @@ A modern, scalable admin dashboard for managing the Rero platform. Built with **
 - **API Communication:** Axios
 - **Version Control:** Git + GitHub + Husky for pre-commit hooks
 
-## 📦 Installation
+## Installation
 
 ```bash
 git clone https://github.com/sabababluani/rero-admin.git
